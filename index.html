@@ -267,7 +267,8 @@ footer a{color:var(--lime);text-decoration:none}
 .mbox .pic svg{width:70%;max-width:260px;height:auto}
 .mbox .info{padding:26px 24px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .mbox h3{font-size:24px;font-weight:800}
-.mbox .x{position:absolute;top:12px;right:12px}
+.mbox .x{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-size:24px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
+@media (max-width:700px){.mbox .x{position:fixed;top:calc(max(16px,env(safe-area-inset-top,0px)) + 10px);right:calc(max(16px,env(safe-area-inset-right,0px)) + 10px);z-index:60}}
 .mbox p{margin:0;color:var(--muted)}
 .mbox dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:6px 0;font-size:14px}
 .mbox dt{color:var(--muted)}
