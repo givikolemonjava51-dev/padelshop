@@ -1,4 +1,6 @@
 <title>Padelbade Shop</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +54,17 @@ button{cursor:pointer}
 .nav a:hover{color:var(--fg)}
 .cart-btn{display:flex;align-items:center;gap:8px;border:0;background:var(--lime);color:var(--lime-ink);font-weight:700;padding:9px 14px;border-radius:8px}
 .cart-btn .count{background:var(--ink);color:#fff;min-width:22px;height:22px;border-radius:11px;display:grid;place-items:center;font-size:12px;padding:0 6px}
-@media (max-width:760px){.nav{display:none}.cart-btn{margin-left:auto}}
+.menu-btn{display:none;border:1px solid var(--line);background:var(--surface);color:var(--fg);width:40px;height:40px;border-radius:8px;place-items:center;padding:0;flex:none}
+@media (max-width:760px){
+.top .wrap{gap:10px;height:58px}
+.menu-btn{display:grid;order:3}
+.cart-btn{margin-left:auto;order:2}
+.nav{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;margin:0;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:var(--shadow);padding:6px max(16px,env(safe-area-inset-left,0px))}
+.nav.open{display:flex}
+.nav a{padding:13px 2px;font-size:16px;border-bottom:1px solid var(--line)}
+.nav a:last-child{border-bottom:0}
+}
+@media (max-width:420px){.brand img{height:28px}.brand b{font-size:15px}.brand span{font-size:10px;padding:2px 5px}.cart-btn{padding:8px 11px}.cart-btn .lbl{display:none}}
 
 /* demo strip */
 .demo{background:var(--surface);color:var(--muted);font-size:13px}
@@ -307,6 +319,32 @@ footer a{color:var(--lime);text-decoration:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .hero .wrap{grid-template-columns:1fr}
 .hero .wrap>div{max-width:760px}
+
+/* phones */
+@media (max-width:560px){
+.section{padding-block:32px}
+.hero .wrap{padding-block:28px 28px}
+.hero p{font-size:15px;margin:12px 0 20px}
+.hero .ctas .btn{flex:1 1 100%;justify-content:center}
+.facts{gap:8px;margin-top:20px}
+.fact{flex:1 1 100%}
+.tools{gap:8px}
+.search{flex:1 1 100%}
+.tools select,.tools .toggle{flex:1 1 0;min-width:0}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.card .pic{padding:8px}
+.card .body{padding:10px 10px 12px;gap:6px}
+.card h3{font-size:14px}
+.card .brandname{font-size:11px}
+.spec{font-size:11px;padding:1px 5px}
+.card .foot{flex-direction:column;align-items:stretch;gap:8px}
+.price{font-size:17px}
+.add{justify-content:center;padding:9px 8px}
+.fab{padding:8px 14px 8px 8px;gap:8px}
+.fab small{display:none}
+.fab .ic{width:30px;height:30px}
+}
+@media (max-width:760px){input,select,textarea{font-size:16px}}
 </style>
 
 <header class="top">
@@ -315,7 +353,10 @@ footer a{color:var(--lime);text-decoration:none}
       <img alt="Padelbade" src="data:image/png;base64,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">
       <b>padelbade</b><span>shop</span>
     </a>
-    <nav class="nav">
+    <button class="menu-btn" id="menuBtn" aria-label="მენიუ" aria-expanded="false" aria-controls="mainNav">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav class="nav" id="mainNav">
       <a href="#shop">მაღაზია</a>
       <a href="#guide">ჩოგნის შერჩევა</a>
       <a href="#pickup">აღება კრწანისში</a>
@@ -323,7 +364,7 @@ footer a{color:var(--lime);text-decoration:none}
     </nav>
     <button class="cart-btn" id="openCart" aria-label="კალათის გახსნა">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
-      კალათა <span class="count num" id="cartCount">0</span>
+      <span class="lbl">კალათა</span> <span class="count num" id="cartCount">0</span>
     </button>
   </div>
 </header>
@@ -687,7 +728,9 @@ document.addEventListener("click",e=>{
  else if(t.dataset.qr!==undefined){onQuick(t.dataset.qr,t.textContent)}
  else if(t.dataset.goshape){state.cat="racket";state.brand=null;state.shape=t.dataset.goshape;state.level=null;renderAll();$("#shop").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
 });
-$("#openCart").onclick=openCart;$("#closeCart").onclick=closeAll;$("#overlay").onclick=closeAll;
+$("#openCart").onclick=openCart;
+{const mb=$("#menuBtn"),nv=$("#mainNav");mb.onclick=()=>{const o=nv.classList.toggle("open");mb.setAttribute("aria-expanded",o)};nv.addEventListener("click",e=>{if(e.target.closest("a")){nv.classList.remove("open");mb.setAttribute("aria-expanded","false")}})}
+$("#closeCart").onclick=closeAll;$("#overlay").onclick=closeAll;
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAll()});
 $("#q").addEventListener("input",e=>{state.q=e.target.value;renderGrid()});
 $("#sort").addEventListener("change",e=>{state.sort=e.target.value;renderGrid()});
