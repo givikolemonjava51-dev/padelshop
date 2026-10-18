@@ -769,7 +769,7 @@ function closeAll(){$("#overlay").hidden=true;$("#drawer").hidden=true;$("#modal
 let mq=1;
 function openModal(id){
  const p=byId(id);mq=1;
- const rows=(p.cat==="racket"?[["ფორმა",SHAPE_NAME[p.shape]],["წონა",p.weight],["ბალანსი",p.balance],["ბირთვი",p.core],["ზედაპირი",p.face]]:(p.specs||[])).filter(r=>r[1]);
+ const rows=(p.cat==="racket"?[["ფორმა",SHAPE_NAME[p.shape]],["წონა",p.weight],["ბალანსი",p.balance],["ზედაპირი",p.face]]:(p.specs||[])).filter(r=>r[1]);
  $("#mbox").innerHTML=`${picHTML(p,"m"+id)}
   <div class="info"><div class="brandname eyebrow">${p.brand}</div><h3>${p.name}</h3>
    <div class="price num">${fmt(p.price)}${p.old?`<s>${fmt(p.old)}</s>`:""}</div>
@@ -892,7 +892,7 @@ $("#checkout").addEventListener("submit",e=>{
 
 /* ===== racket assistant ===== */
 const CATALOG=P.map(p=>p.cat==="racket"
- ?{id:p.id,type:"racket",brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock,shape:p.shape,weight:p.weight,balance:p.balance,core:p.core,face:p.face,level:LEVEL_NAME[p.level],ratings_1_10:p.r?{power:p.r[0],control:p.r[1],comfort:p.r[2]}:null,note:p.desc}
+ ?{id:p.id,type:"racket",brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock,shape:p.shape,weight:p.weight,balance:p.balance,face:p.face,level:LEVEL_NAME[p.level],ratings_1_10:p.r?{power:p.r[0],control:p.r[1],comfort:p.r[2]}:null,note:p.desc}
  :{id:p.id,type:p.cat,brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock});
 const RULES=`You are the racket-fitting assistant of the Padelbade padel club online shop (Tbilisi, Georgia).
 Reply in the customer's language; default to Georgian. Be warm and short: at most about 80 words per reply, plain text, no headings, no tables.
@@ -981,7 +981,7 @@ function quizResult(){
  const inB=rs.filter(p=>p.price<=quiz.budget);
  const pool=inB.length?inB:[...rs].sort((a,b)=>a.price-b.price).slice(0,2);
  const top=pool.map(p=>({p,s:-Math.abs(p.level-quiz.level)*2-Math.abs(SI[p.shape]-quiz.style)})).sort((a,b)=>b.s-a.s||a.p.price-b.p.price).slice(0,2);
- const why=p=>`${SHAPE_NAME[p.shape]} ფორმა, ${p.balance.toLowerCase()} ბალანსი, ${p.core}. ${p.desc}`;
+ const why=p=>`${SHAPE_NAME[p.shape]} ფორმა, ${p.balance.toLowerCase()} ბალანსი. ${p.desc}`;
  bubble("ai",(inB.length?"შენს პასუხებზე ყველაზე კარგად ესენი ერგება:":"ამ ბიუჯეტში ჩოგანი არ გვაქვს, ყველაზე ახლოს ესენია:")+top.map(t=>`\n${esc(why(t.p))}`+pickCard(t.p.id)).join(""));
  setQuick([["restart","თავიდან დაწყება"]]);
 }
