@@ -449,7 +449,7 @@ footer a{color:var(--lime);text-decoration:none}
       <div class="kr">
         <div class="club"><h3>Padelbade კრწანისი</h3><p>5 დახურული პრემიუმ კორტი.</p><p>ყოველდღე 08:00 – 01:00</p><p>გადახდა ადგილზე, პროდუქტის აღებისას.</p><a href="https://padelbade.com/" target="_blank" rel="noopener">გადამისამართება padelbade.com-ზე →</a></div>
         <div class="howbox">
-          <div class="how"><h3>ადგილზე გადახდა <i>კრწანისი</i></h3><ol><li>დაამატე ჩოგანი კალათაში და აირჩიე „ადგილზე გადახდა“.</li><li>შეკვეთა დაგხვდება რეცეფციაზე, შენს სახელზე გადადებული.</li><li>მოდი 10:00 – 01:00, გადაიხადე და წაიღე.</li></ol></div>
+          <div class="how"><h3>ადგილზე გადახდა <i>კრწანისი</i></h3><ol><li>დაამატე ჩოგანი კალათაში და აირჩიე „ადგილზე გადახდა“.</li><li>შეკვეთა დაგხვდება რეცეფციაზე, შენს სახელზე გადადებული.</li><li>მოდი 08:00 – 01:00, გადაიხადე და წაიღე.</li></ol></div>
           <div class="how"><h3>ონლაინ გადარიცხვა <i>მიწოდება</i></h3><ol><li>აირჩიე „ონლაინ გადარიცხვა“ და მიუთითე მისამართი.</li><li>გადმორიცხე თანხა ერთ-ერთ ანგარიშზე, დანიშნულებაში შეკვეთის ნომრით.</li><li>კლუბიდან დაგიკავშირდებით და ჩოგანს გამოგიგზავნით.</li></ol>
             <div class="accts"><div><b>TBC</b> · <code>GE27TB7579636080100019</code></div><div><b>Bank of Georgia</b> · <code>GE79BG0000000603557250</code></div><div>მიმღები: <b>შპს პადელბადე რუსთავი</b></div></div></div>
         </div>
@@ -823,7 +823,7 @@ $("#checkout").addEventListener("submit",e=>{
  const no="PB-"+String(Date.now()).slice(-5);
  msg.innerHTML=bank
   ?`<div class="ok"><b>შეკვეთა ${no}</b>გადმორიცხე <b style="display:inline;font-size:inherit">${$("#tot").textContent}</b> ზემოთ მითითებულ ერთ-ერთ ანგარიშზე. დანიშნულებაში მიუთითე: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. თანხის მიღების შემდეგ დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით.</div>`
-  :`<div class="ok"><b>ჯავშანი ${no}</b>შეკვეთა დაგხვდება Padelbade კრწანისში, შენს სახელზე. ჯავშანი აქტიურია 3 დღე. გადასახდელი: ${$("#tot").textContent}. მობრძანდი 10:00 – 01:00.</div>`;
+  :`<div class="ok"><b>ჯავშანი ${no}</b>შეკვეთა დაგხვდება Padelbade კრწანისში, შენს სახელზე. ჯავშანი აქტიურია 3 დღე. გადასახდელი: ${$("#tot").textContent}. მობრძანდი 08:00 – 01:00.</div>`;
 });
 
 
@@ -840,7 +840,7 @@ Goal: recommend the best padel racket from THIS catalog only.
 Fitting knowledge: round shape + low balance + soft EVA = control, big sweet spot, best for beginners, easier on the elbow. Teardrop = balance of control and power, intermediate. Diamond + high balance + hard EVA = maximum power, advanced players, harder on the elbow. Lighter rackets suit beginners and players with arm pain.
 You may briefly suggest one useful extra (balls, overgrip, frame protector, bag) the same way with [[id]], only when it fits.
 Stock: in_stock is the number of units left. Never recommend an item with in_stock 0; if a racket is low (1-3), you may mention that only a few are left.
-Buying options: (1) reserve online, pick up and pay at the Padelbade Krtsanisi branch (open daily 10:00-01:00); or (2) pay online by bank transfer (TBC or Bank of Georgia, recipient შპს პადელბადე რუსთავი, account numbers are shown in the cart), then the club contacts the customer and ships the racket. No pickup at other branches.
+Buying options: (1) reserve online, pick up and pay at the Padelbade Krtsanisi branch (open daily 08:00-01:00); or (2) pay online by bank transfer (TBC or Bank of Georgia, recipient შპს პადელბადე რუსთავი, account numbers are shown in the cart), then the club contacts the customer and ships the racket. No pickup at other branches.
 Court bookings: point to padelbade.com. Off-topic questions: politely steer back to rackets.
 Catalog JSON:
 ${JSON.stringify(CATALOG)}`;
