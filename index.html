@@ -266,7 +266,7 @@ footer a{color:var(--lime);text-decoration:none}
 .mbox .pic{background:var(--tile);display:grid;place-items:center;padding:32px;min-height:300px}
 .mbox .pic svg{width:70%;max-width:260px;height:auto}
 .mbox .pic.gal{display:flex;flex-direction:column;justify-content:center;align-items:stretch;padding:0;position:relative;min-width:0;overflow:hidden}
-.gal .track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain}
+.gal .track{display:flex;width:100%;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain}
 .gal .track::-webkit-scrollbar{display:none}
 .gal .slide{flex:0 0 100%;scroll-snap-align:center;aspect-ratio:1/1;position:relative;min-width:0}
 .gal .slide>*{position:absolute;inset:30px 30px 36px;width:calc(100% - 60px);height:calc(100% - 66px);max-width:none;object-fit:contain;border-radius:0;margin:auto}
@@ -277,6 +277,16 @@ footer a{color:var(--lime);text-decoration:none}
 .dots{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:7px}
 .dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:#2A2A2A;opacity:.22;cursor:pointer;transition:opacity .2s,width .2s}
 .dots button.on{opacity:.85;width:20px;border-radius:4px}
+.card .pic.gal{display:block;padding:0;overflow:hidden}
+.card .gal .badge{z-index:2}
+button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;color:inherit}
+.card .gal .slide>*{inset:14px 14px 24px;width:calc(100% - 28px);height:calc(100% - 38px)}
+.card .gnav{width:30px;height:30px;font-size:19px;opacity:0;transition:opacity .15s}
+.card .gnav.prev{left:6px}.card .gnav.next{right:6px}
+.card:hover .gnav:not(:disabled),.card .gnav:focus-visible{opacity:1}
+.card .dots{bottom:8px;gap:5px}
+.card .dots button{width:6px;height:6px}
+.card .dots button.on{width:14px}
 .mbox .info{padding:26px 24px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .mbox h3{font-size:24px;font-weight:800}
 .mbox .x{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;font-size:24px;box-shadow:0 2px 10px rgba(0,0,0,.35)}
@@ -305,7 +315,7 @@ footer a{color:var(--lime);text-decoration:none}
 .mrow .qty{margin-top:0}
 .mrow .qty button{width:36px;height:40px}
 .mrow .add{flex:1;justify-content:center;padding:12px}
-@media (max-width:700px){.mbox{grid-template-columns:1fr}.mbox .pic{min-height:200px;padding:20px}.mbox .pic.gal{padding:0}.gal .slide{aspect-ratio:auto;height:min(80vw,360px)}.gal .slide>*{inset:16px 16px 30px;width:calc(100% - 32px);height:calc(100% - 46px)}.fields{grid-template-columns:1fr}}
+@media (max-width:700px){.mbox{grid-template-columns:1fr}.mbox .pic{min-height:200px;padding:20px}.mbox .pic.gal{padding:0}.mbox .gal .slide{aspect-ratio:auto;height:min(80vw,360px)}.mbox .gal .slide>*{inset:16px 16px 30px;width:calc(100% - 32px);height:calc(100% - 46px)}.fields{grid-template-columns:1fr}}
 
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--court);color:#fff;padding:10px 16px;border-radius:8px;font-size:14px;z-index:60;box-shadow:var(--shadow)}
 .toast b{color:var(--lime)}
@@ -717,7 +727,7 @@ function renderGrid(){
  if(!list.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1">ამ ფილტრით პროდუქტი ვერ მოიძებნა. სცადე სხვა კომბინაცია ან გაასუფთავე ფილტრები.</div>`;return}
  $("#grid").innerHTML=list.map(p=>`
   <article class="card${p.stock<=0?" soldout":""}">
-   <button class="pic" data-open="${p.id}" aria-label="${full(p)} — დეტალები">${p.stock<=0?`<span class="badge sale">ამოიწურა</span>`:p.old?`<span class="badge sale">-${Math.round((1-p.price/p.old)*100)}%</span>`:p.badge?`<span class="badge">${p.badge}</span>`:""}${art(p,"c"+p.id)}</button>
+   ${(b=>GAL[p.id]?picHTML(p,"c"+p.id,true,b):`<button class="pic" data-open="${p.id}" aria-label="${full(p)} — დეტალები">${b}${art(p,"c"+p.id)}</button>`)(p.stock<=0?`<span class="badge sale">ამოიწურა</span>`:p.old?`<span class="badge sale">-${Math.round((1-p.price/p.old)*100)}%</span>`:p.badge?`<span class="badge">${p.badge}</span>`:"")}
    <div class="body">
     <div class="brandname">${p.brand}</div>
     <h3>${p.name}</h3>
@@ -727,6 +737,7 @@ function renderGrid(){
      <button class="add" data-add="${p.id}"${left(p)<=0?" disabled":""}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>${p.stock<=0?"ამოიწურა":p.price==null?"ფასი კლუბში":left(p)<=0?"ყველა კალათაშია":"კალათაში"}</button></div>
    </div>
   </article>`).join("");
+ $("#grid").querySelectorAll(".gal").forEach(initGallery);
 }
 function renderAll(){renderCats();renderSub();renderGrid()}
 
@@ -775,7 +786,7 @@ function openModal(id){
  $("#minc").onclick=()=>{mq=Math.min(Math.max(1,left(p)),mq+1);$("#mq").textContent=mq};
  $("#madd").onclick=()=>{if(addToCart(id,mq))closeAll()};
  $("#mclose").onclick=closeAll;
- initGallery();initVideo();
+ initGallery($("#mbox .gal"));initVideo();
 }
 function racketExtra(p){
  if(p.cat!=="racket")return "";
@@ -795,15 +806,18 @@ function initVideo(){
  b.querySelector("img").onerror=()=>$("#mvid").remove();
  b.onclick=()=>{b.parentNode.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" title="ვიდეომიმოხილვა" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`};
 }
-function picHTML(p,u){
+/* card=true: slides are buttons that open the product, extra photos load lazily */
+function picHTML(p,u,card,badge=""){
  const ex=GAL[p.id]||[];
  if(!ex.length)return `<div class="pic">${art(p,u)}</div>`;
- const slides=[art(p,u),...ex.map((s,i)=>s.startsWith("IMG:")?photo(s.slice(4),`${full(p)}, ფოტო ${i+2}`):`<img src="${galSrc(s)}" alt="${full(p)}, ფოტო ${i+2}" decoding="async" referrerpolicy="no-referrer">`)];
- return `<div class="pic gal"><div class="track">${slides.map(s=>`<div class="slide">${s}</div>`).join("")}</div>
+ const lz=card?' loading="lazy"':"";
+ const slides=[art(p,u),...ex.map((s,i)=>s.startsWith("IMG:")?photo(s.slice(4),`${full(p)}, ფოტო ${i+2}`,card):`<img src="${galSrc(s)}" alt="${full(p)}, ფოტო ${i+2}"${lz} decoding="async" referrerpolicy="no-referrer">`)];
+ const sl=card?s=>`<button class="slide" data-open="${p.id}" aria-label="${full(p)} — დეტალები">${s}</button>`:s=>`<div class="slide">${s}</div>`;
+ return `<div class="pic gal">${badge}<div class="track">${slides.map(sl).join("")}</div>
   <button class="gnav prev" aria-label="წინა ფოტო">‹</button><button class="gnav next" aria-label="შემდეგი ფოტო">›</button><div class="dots"></div></div>`;
 }
-function initGallery(){
- const g=$("#mbox .gal");if(!g)return;
+function initGallery(g){
+ if(!g)return;
  const tr=g.querySelector(".track"),dots=g.querySelector(".dots"),pv=g.querySelector(".prev"),nx=g.querySelector(".next");
  const n=()=>tr.children.length,cur=()=>Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth));
  let tg=null,tt0;
@@ -814,7 +828,7 @@ function initGallery(){
  pv.onclick=()=>go(pos()-1);nx.onclick=()=>go(pos()+1);
  tr.addEventListener("scroll",()=>requestAnimationFrame(sync),{passive:true});
  tr.addEventListener("keydown",e=>{const d={ArrowLeft:-1,ArrowRight:1}[e.key];if(d){e.preventDefault();go(pos()+d)}});
- tr.tabIndex=0;tr.setAttribute("aria-label","ფოტოები");
+ if(!tr.querySelector("button"))tr.tabIndex=0;tr.setAttribute("aria-label","ფოტოები");
  build();
 }
 
