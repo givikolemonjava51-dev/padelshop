@@ -99,14 +99,6 @@ button{cursor:pointer}
 .fi{width:40px;height:40px;border-radius:12px;background:var(--lime);color:var(--ink);display:grid;place-items:center;flex:none}
 .fact b{display:block;font-family:"Montserrat","Noto Sans Georgian",sans-serif;font-size:18px;font-weight:800;color:var(--white);line-height:1.2}
 .fact small{display:block;font-size:12px;color:var(--muted)}
-.brandbox{margin-top:16px;padding:16px;border-radius:18px;background:rgba(42,42,42,.72);border:1px solid var(--line);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);position:relative;max-width:560px}
-.bb-label{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--lime);margin-bottom:12px}
-.bb-label span{color:var(--muted);font-weight:500;letter-spacing:0}
-.brandchips{display:flex;flex-wrap:wrap;gap:8px}
-.brandlink{display:inline-flex;align-items:center;gap:8px;border:1.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.04);color:var(--white);font-family:"Montserrat",sans-serif;font-weight:700;font-size:14px;padding:8px 10px 8px 14px;border-radius:999px;cursor:pointer;transition:background .15s,color .15s,border-color .15s,transform .15s}
-.brandlink i{font-style:normal;font-size:11px;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:rgba(255,255,255,.12);display:grid;place-items:center}
-.brandlink:hover,.brandlink:focus-visible{background:var(--lime);border-color:var(--lime);color:var(--ink);transform:translateY(-1px)}
-.brandlink:hover i,.brandlink:focus-visible i{background:var(--ink);color:var(--lime)}
 @media (max-width:760px){.hero .wrap{grid-template-columns:1fr;padding-block:40px 36px}.hero .art{width:min(260px,80%);grid-row:1;justify-self:center}}
 
 /* shop */
@@ -429,10 +421,6 @@ footer a{color:var(--lime);text-decoration:none}
       <div class="facts">
         <div class="fact"><span class="fi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><b>padelbade Krtsanisi</b><small>Giorgi Guramishvili Str #7</small></div></div>
         <div class="fact"><span class="fi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><div><b class="num">300–1 200 ₾</b><small>ჩოგნები ყველა დონისთვის</small></div></div>
-      </div>
-      <div class="brandbox">
-        <div class="bb-label">ბრენდები მარაგში <span>— აირჩიე და ნახე ჩოგნები</span></div>
-        <div class="brandchips"><button class="brandlink" data-brand="Babolat" data-jump="1">Babolat<i class="num"></i></button><button class="brandlink" data-brand="Head" data-jump="1">Head<i class="num"></i></button><button class="brandlink" data-brand="Nox" data-jump="1">Nox<i class="num"></i></button><button class="brandlink" data-brand="Bullpadel" data-jump="1">Bullpadel<i class="num"></i></button><button class="brandlink" data-brand="Siux" data-jump="1">Siux<i class="num"></i></button><button class="brandlink" data-brand="Lok" data-jump="1">Lok<i class="num"></i></button></div>
       </div>
     </div>
   </div>
@@ -849,9 +837,6 @@ $("#shapes").innerHTML=GUIDE.map(g=>{
 document.addEventListener("click",e=>{
  const t=e.target.closest("button");if(!t)return;
  if(t.dataset.cat){state.cat=t.dataset.cat;resetF();renderAll()}
- else if(t.dataset.brand){
-  if(t.dataset.jump){state.cat="racket";resetF();state.brand=t.dataset.brand;state.q="";$("#q").value="";renderAll();$("#shop").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
- }
  else if(t.dataset.f){const k=t.dataset.f;state[k]=String(state[k])===t.dataset.v?null:t.dataset.v;renderSub();renderGrid()}
  else if(t.dataset.clearf){resetF();renderSub();renderGrid()}
  else if(t.dataset.add){addToCart(t.dataset.add);t.classList.add("done");t.lastChild.textContent="დაემატა";setTimeout(()=>{t.classList.remove("done");t.lastChild.textContent="კალათაში"},1400)}
@@ -1000,6 +985,5 @@ $("#botForm").addEventListener("submit",e=>{
 });
 fab.onclick=openBot;$("#botClose").onclick=closeBot;
 
-document.querySelectorAll(".brandlink i").forEach(i=>{const b=i.parentElement.dataset.brand;i.textContent=P.filter(p=>p.cat==="racket"&&p.brand===b).length});
 renderAll();renderCart();
 </script>
