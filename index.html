@@ -528,7 +528,7 @@ const CATS=[
   ["all","ყველა"],["racket","ჩოგნები"],["ball","ბურთები"],["bag","ჩანთები"],
   ["shoe","ფეხსაცმელი"],["wear","ტანსაცმელი"],["acc","აქსესუარები"]];
 const SHAPE_NAME={round:"Round",tear:"Teardrop",hybrid:"Hybrid",diamond:"Diamond"};
-const LEVEL_NAME={1:"დამწყები",2:"საშუალო",3:"მოწინავე"};
+const LEVEL_NAME={1:"Beginner",2:"Intermediate",3:"Advanced"};
 const BAL_NAME={low:"დაბალი",mid:"საშუალო",high:"მაღალი"};
 const STYLE_NAME={control:"კონტროლი",allround:"უნივერსალური",power:"შეტევა"};
 
@@ -658,7 +658,7 @@ const FILTERS=[
  ["weight","წონა",()=>[["lo","355 გ-მდე"],["mid","356–365 გ"],["hi","366 გ-ზე მეტი"]],(p,v)=>{const g=grams(p);return g!=null&&(v==="lo"?g<=355:v==="mid"?g>355&&g<=365:g>365)}],
  ["shape","ფორმა",()=>Object.entries(SHAPE_NAME),(p,v)=>p.shape===v],
  ["balance","ბალანსი",()=>Object.entries(BAL_NAME),(p,v)=>balOf(p)===v],
- ["level","მოთამაშის დონე",()=>Object.entries(LEVEL_NAME),(p,v)=>String(p.level)===String(v)],
+ ["level","რეკომენდირებული დონე",()=>Object.entries(LEVEL_NAME),(p,v)=>String(p.level)===String(v)],
  ["style","თამაშის სტილი",()=>Object.entries(STYLE_NAME),(p,v)=>styleOf(p)===v],
 ];
 const resetF=()=>FILTERS.forEach(([k])=>state[k]=null);
@@ -798,9 +798,9 @@ let tt;function toast(h){const t=$("#toast");t.innerHTML=h;t.hidden=false;clearT
 
 /* guide */
 const GUIDE=[
- {s:"round",lvl:"დამწყები → საშუალო",txt:"ბალანსი სახელურთან ახლოსაა და sweet spot დიდია. მეტი კონტროლი, ნაკლები შეცდომა.",m:[3,1,3]},
- {s:"tear",lvl:"საშუალო → მოწინავე",txt:"ძალისა და კონტროლის შუალედი. უხდება მოთამაშეს, რომელიც ორივე ზონაში თამაშობს.",m:[2,2,2]},
- {s:"diamond",lvl:"მოწინავე",txt:"მაღალი ბალანსი და მცირე sweet spot. მაქსიმალური ძალა სმეშისა და ვოლეისთვის.",m:[1,3,1]},
+ {s:"round",lvl:"Beginner → Intermediate",txt:"ბალანსი სახელურთან ახლოსაა და sweet spot დიდია. მეტი კონტროლი, ნაკლები შეცდომა.",m:[3,1,3]},
+ {s:"tear",lvl:"Intermediate → Advanced",txt:"ძალისა და კონტროლის შუალედი. უხდება მოთამაშეს, რომელიც ორივე ზონაში თამაშობს.",m:[2,2,2]},
+ {s:"diamond",lvl:"Advanced",txt:"მაღალი ბალანსი და მცირე sweet spot. მაქსიმალური ძალა სმეშისა და ვოლეისთვის.",m:[1,3,1]},
 ];
 $("#shapes").innerHTML=GUIDE.map(g=>{
  const demo={shape:g.s,c:["#2A2A2A","#C1D885","#2B6651"],cat:"racket"};
