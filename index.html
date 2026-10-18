@@ -135,7 +135,7 @@ select{border:1px solid var(--line);background:var(--surface);border-radius:8px;
 .card:hover{border-color:var(--lime);box-shadow:var(--shadow)}
 .card .pic{position:relative;background:var(--tile);aspect-ratio:1/1;max-width:100%;display:grid;place-items:center;border:0;padding:18px;width:100%}
 .card .pic svg{width:72%;height:auto;max-height:100%}
-.pic img,.th img{width:100%;height:auto;display:block;border-radius:8px;mix-blend-mode:multiply}
+.pic img,.th img{width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;display:block;border-radius:8px;mix-blend-mode:multiply}
 .card .pic{padding:12px}
 .badge{position:absolute;top:10px;left:10px;font-family:"Montserrat",sans-serif;font-size:11px;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:4px;background:var(--court);color:#fff}
 .badge.sale{background:var(--ink);color:var(--lime)}
@@ -612,8 +612,25 @@ const GAL={
  b2:["0646/3671/5163/files/10294.jpg?v=1725947950","0646/3671/5163/files/10293.jpg?v=1725947950"]
 };
 GAL.b3=["IMG:b1",...GAL.b1];GAL.b4=["IMG:b2",...GAL.b2];
-const galSrc=s=>s.startsWith("IMG:")?IMG[s.slice(4)]:s.startsWith("http")?s:SH+s+"&width=900";
-const art=(p,u)=>IMG[p.id]?`<img src="${IMG[p.id]}" alt="${full(p)}" loading="lazy">`:p.cat==="racket"?racketSVG(p,u):otherSVG(p);
+const galSrc=s=>s.startsWith("http")?s:SH+s+"&width=900";
+/* full-resolution front shots; the embedded IMG thumbnails stay as the fallback */
+const HQ={
+ r1:"0614/7761/7916/files/241428_1.jpg?v=1778102163",
+ r2:"0607/3525/8840/files/BA150160_0100_AIR-VIPER_100.jpg?v=1737990876",
+ r3:"0614/7761/7916/files/Untitleddesign-2026-04-23T012513.281.png?v=1776878730",
+ r4:"0646/3671/5163/files/VIBEGREEN_ORANGE_1.jpg?v=1770977955",
+ r5:"0608/2376/5229/files/PEQUHADV26_1b_resultado_6bec9924-5c56-4876-ab64-008f467376d1.jpg?v=1764711102",
+ r6:"0665/9024/5091/files/2_4c6ed376-b8d1-4ef6-b57e-008bb8520e8c.webp?v=1776082411",
+ r7:"0614/7761/7916/files/6qJsOVGUG5AqH93HQV5NaBLdPkoT5Z-metadW5uYW1lZCAoMykuanBn.webp?v=1778102428",
+ r8:"https://img.tenniswarehouse-europe.com/watermark/rs.php?path=BUPRIOPO26-1.jpg&nw=900",
+ r9:"0646/3671/5163/files/LOKBEHYPE2_1.jpg?v=1759928832",
+ r10:"0556/5736/5640/files/Bullpadel_XPLO_02_2027_Front_View.png?v=1789396104",
+ r11:"0815/5099/9901/files/siux-diablo-elite-4-padel-racket.webp?v=1775299733",
+ b1:"0698/0337/files/WR8900801001_a_8d1974c8-b88d-4453-a76c-0b48bb54e33f.jpg?v=1776199891",
+ b2:"0646/3671/5163/files/10575.jpg?v=1725947950"
+};
+const photo=(id,alt,lazy)=>HQ[id]?`<img src="${galSrc(HQ[id])}" data-fb="${id}" onerror="this.onerror=null;this.src=IMG[this.dataset.fb]" alt="${alt}"${lazy?' loading="lazy"':""} decoding="async" referrerpolicy="no-referrer">`:`<img src="${IMG[id]}" alt="${alt}"${lazy?' loading="lazy"':""}>`;
+const art=(p,u)=>IMG[p.id]?photo(p.id,full(p),true):p.cat==="racket"?racketSVG(p,u):otherSVG(p);
 const fmt=n=>n==null?"ფასი კლუბში":n.toLocaleString("en-US").replace(/,/g," ")+" ₾";
 const full=p=>(p.brand?p.brand+" ":"")+p.name;
 const byId=id=>P.find(p=>p.id===id);
@@ -729,7 +746,7 @@ function openModal(id){
 function picHTML(p,u){
  const ex=GAL[p.id]||[];
  if(!ex.length)return `<div class="pic">${art(p,u)}</div>`;
- const slides=[art(p,u),...ex.map((s,i)=>`<img src="${galSrc(s)}" alt="${full(p)}, ფოტო ${i+2}" decoding="async" referrerpolicy="no-referrer">`)];
+ const slides=[art(p,u),...ex.map((s,i)=>s.startsWith("IMG:")?photo(s.slice(4),`${full(p)}, ფოტო ${i+2}`):`<img src="${galSrc(s)}" alt="${full(p)}, ფოტო ${i+2}" decoding="async" referrerpolicy="no-referrer">`)];
  return `<div class="pic gal"><div class="track">${slides.map(s=>`<div class="slide">${s}</div>`).join("")}</div>
   <button class="gnav prev" aria-label="წინა ფოტო">‹</button><button class="gnav next" aria-label="შემდეგი ფოტო">›</button><div class="dots"></div></div>`;
 }
@@ -741,7 +758,7 @@ function initGallery(){
  const go=i=>{tg=Math.max(0,Math.min(n()-1,i));clearTimeout(tt0);tt0=setTimeout(()=>tg=null,600);tr.scrollTo({left:tg*tr.clientWidth})},pos=()=>tg??cur();
  const sync=()=>{const i=cur(),k=n();[...dots.children].forEach((d,j)=>d.classList.toggle("on",j===i));pv.disabled=i<=0;nx.disabled=i>=k-1;dots.hidden=pv.hidden=nx.hidden=k<2};
  const build=()=>{dots.innerHTML=[...tr.children].map((_,j)=>`<button aria-label="ფოტო ${j+1}"></button>`).join("");[...dots.children].forEach((d,j)=>d.onclick=()=>go(j));sync()};
- [...tr.children].slice(1).forEach(sl=>{const im=sl.querySelector("img");if(im)im.onerror=()=>{sl.remove();build()}});
+ [...tr.children].slice(1).forEach(sl=>{const im=sl.querySelector("img");if(im&&!im.dataset.fb)im.onerror=()=>{sl.remove();build()}});
  pv.onclick=()=>go(pos()-1);nx.onclick=()=>go(pos()+1);
  tr.addEventListener("scroll",()=>requestAnimationFrame(sync),{passive:true});
  tr.addEventListener("keydown",e=>{const d={ArrowLeft:-1,ArrowRight:1}[e.key];if(d){e.preventDefault();go(pos()+d)}});
