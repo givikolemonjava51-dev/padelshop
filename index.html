@@ -293,6 +293,22 @@ footer a{color:var(--lime);text-decoration:none}
 .mbox dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:6px 0;font-size:14px}
 .mbox dt{color:var(--muted)}
 .mbox dd{margin:0;font-weight:600}
+.mbox h4{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:8px 0 0}
+.rates{display:grid;gap:8px;font-size:14px}
+.rate{display:grid;grid-template-columns:80px 1fr 34px;align-items:center;gap:10px}
+.rate .bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.rate .bar i{display:block;height:100%;background:var(--lime);border-radius:4px}
+.rate b{text-align:right;font-family:"Montserrat",sans-serif;font-weight:800}
+.lvls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.lvls span{text-align:center;font-size:13px;font-weight:600;padding:7px 4px;border-radius:8px;border:1px solid var(--line);color:var(--muted)}
+.lvls span.on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
+.mvid{grid-column:1/-1;padding:0 24px 24px;display:flex;flex-direction:column;gap:10px}
+.yt{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#000}
+.yt button{position:absolute;inset:0;border:0;padding:0;background:none;cursor:pointer;width:100%;height:100%}
+.yt img,.yt iframe{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0}
+.yt .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:68px;height:48px;border-radius:12px;background:var(--court);display:grid;place-items:center;box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.yt .play::after{content:"";border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:4px}
+.mvid a{font-size:13px;font-weight:600;color:var(--accent-text)}
 .mrow{display:flex;gap:10px;align-items:center;margin-top:8px}
 .mrow .qty{margin-top:0}
 .mrow .qty button{width:36px;height:40px}
@@ -533,17 +549,17 @@ const BAL_NAME={low:"დაბალი",mid:"საშუალო",high:"მ�
 const STYLE_NAME={control:"კონტროლი",allround:"უნივერსალური",power:"შეტევა"};
 
 const P=[
- {id:"r1",stock:1,cat:"racket",brand:"Babolat",name:"Stima Vita",price:300,shape:"round",weight:"345 გ",balance:"დაბალი",core:"EVA",face:"მინაბოჭკო",level:1,c:["#2A2A2A","#C1D885","#FFFFFF"],desc:"მსუბუქი ჩოგანი დიდი sweet spot-ით და Hybrid ჩარჩოთი. კომფორტული დამწყებთათვის."},
- {id:"r2",stock:1,cat:"racket",brand:"Babolat",name:"Air Viper",price:1000,shape:"tear",weight:null,balance:"საშუალო",core:"X-EVA",face:"კარბონი 16K",level:3,c:["#FFFFFF","#2B6651","#2A2A2A"],desc:"Babolat-ის ტოპ მოდელი. Teardrop ფორმა და 16K კარბონი ძლიერი თავდასხმისთვის."},
- {id:"r3",stock:1,cat:"racket",brand:"Head",name:"Coello Vibe 2026",price:480,shape:"tear",weight:"355 გ",balance:"საშუალო (272 მმ)",core:"Foam",face:"მინაბოჭკო",level:1,c:["#2A2A2A","#C1D885","#2B6651"],desc:"Teardrop ფორმა ძალისა და კონტროლის ბალანსით."},
- {id:"r4",stock:1,cat:"racket",brand:"Head",name:"Vibe 2026",price:320,shape:"tear",weight:null,balance:"საშუალო (265 მმ)",core:"Foam",face:"მინაბოჭკო",level:1,c:["#2B6651","#C1D885","#FFFFFF"],desc:"დაბალი ბალანსი და მარტივი კონტროლი. კარგი პირველი ჩოგანი."},
- {id:"r5",stock:1,cat:"racket",brand:"Nox",name:"Equation Hard Advanced",price:420,shape:"round",weight:null,balance:"საშუალო",core:"მყარი EVA (HR3)",face:"მინაბოჭკო 3K",level:2,c:["#2A2A2A","#C1D885","#394150"],desc:"Advanced Series-ის Round ჩოგანი მყარი ბირთვით. კონტროლი და ძლიერი დარტყმა. Smart Strap თასმით."},
- {id:"r6",stock:1,cat:"racket",brand:"Bullpadel",name:"Hack Advance",price:400,shape:"round",weight:"371 გ",balance:"დაბალი",core:null,face:null,level:3,c:["#FFFFFF","#2A2A2A","#C1D885"],desc:"Hack-ის სერიის კონტროლის ვერსია, Round ფორმით."},
- {id:"r7",stock:1,cat:"racket",brand:"Bullpadel",name:"Ionic Light 26",price:480,shape:"hybrid",weight:"360 გ",balance:"საშუალო",core:"Multieva",face:"Glaphite",level:1,c:["#2B6651","#FFFFFF","#C1D885"],desc:"Ionic სერიის მსუბუქი ვერსია. სწრაფი რეაქცია ბადესთან."},
- {id:"r8",stock:1,cat:"racket",brand:"Bullpadel",name:"Ionic Power 26",price:600,shape:"hybrid",weight:"362 გ",balance:"მაღალი",core:"Multieva",face:"Glaphite",level:2,c:["#394150","#C1D885","#FFFFFF"],desc:"Ionic სერიის ძლიერი ვერსია თავდამსხმელი თამაშისთვის."},
- {id:"r9",stock:1,cat:"racket",brand:"Lok",name:"Be Hype Gen 2",price:400,shape:"diamond",weight:null,balance:"მაღალი",core:"Custom EVA",face:"Fiberflex",level:3,c:["#2A2A2A","#FFFFFF","#C1D885"],desc:"Diamond ფორმა და მაღალი ბალანსი ძლიერი სმეშისთვის."},
- {id:"r10",stock:1,cat:"racket",brand:"Bullpadel",name:"XPLO 27",price:1200,shape:"hybrid",weight:"370 გ",balance:"მაღალი (270 მმ)",core:"Multieva",face:"X-Tend Carbon 3K",level:3,c:["#2A2A2A","#C1D885","#2B6651"],desc:"Bullpadel-ის 2027 წლის ტოპ მოდელი. Power+ მაქსიმალური ძალისთვის."},
- {id:"r11",stock:1,cat:"racket",brand:"Siux",name:"Diablo Elite 4",price:500,shape:"hybrid",weight:null,balance:"საშუალო",core:"EVA",face:"კარბონი 12K",level:3,c:["#2A2A2A","#FFFFFF","#2B6651"],desc:"Siux Diablo სერიის Hybrid ჩოგანი 12K კარბონით. კონტროლისა და ძალის ბალანსი."},
+ {id:"r1",stock:1,cat:"racket",brand:"Babolat",name:"Stima Vita",price:300,shape:"round",weight:"345 გ",balance:"დაბალი",core:"EVA",face:"მინაბოჭკო",level:1,r:[5,8,9],yt:"jjHCP84tIGI",c:["#2A2A2A","#C1D885","#FFFFFF"],desc:"მსუბუქი ჩოგანი დიდი sweet spot-ით და Hybrid ჩარჩოთი. კომფორტული დამწყებთათვის."},
+ {id:"r2",stock:1,cat:"racket",brand:"Babolat",name:"Air Viper",price:1000,shape:"tear",weight:"360–375 გ",balance:"საშუალო",core:"X-EVA",face:"კარბონი 16K",level:3,r:[9.7,8.4,6],yt:"YG08aoalavc",c:["#FFFFFF","#2B6651","#2A2A2A"],desc:"Babolat-ის ტოპ მოდელი. Teardrop ფორმა და 16K კარბონი ძლიერი თავდასხმისთვის."},
+ {id:"r3",stock:1,cat:"racket",brand:"Head",name:"Coello Vibe 2026",price:480,shape:"tear",weight:"355 გ",balance:"საშუალო (272 მმ)",core:"Foam",face:"მინაბოჭკო",level:1,r:[7.1,6.9,8],yt:"cxbEOYDprjA",c:["#2A2A2A","#C1D885","#2B6651"],desc:"Teardrop ფორმა ძალისა და კონტროლის ბალანსით."},
+ {id:"r4",stock:1,cat:"racket",brand:"Head",name:"Vibe 2026",price:320,shape:"tear",weight:"360–370 გ",balance:"საშუალო (265 მმ)",core:"Foam",face:"მინაბოჭკო",level:1,r:[6.5,7,9],yt:"uVO7FSJDvv8",c:["#2B6651","#C1D885","#FFFFFF"],desc:"დაბალი ბალანსი და მარტივი კონტროლი. კარგი პირველი ჩოგანი."},
+ {id:"r5",stock:1,cat:"racket",brand:"Nox",name:"Equation Hard Advanced",price:420,shape:"round",weight:"360–375 გ",balance:"საშუალო",core:"მყარი EVA (HR3)",face:"მინაბოჭკო 3K",level:2,r:[6.6,8,6],yt:"KsakSa-90gg",c:["#2A2A2A","#C1D885","#394150"],desc:"Advanced Series-ის Round ჩოგანი მყარი ბირთვით. კონტროლი და ძლიერი დარტყმა. Smart Strap თასმით."},
+ {id:"r6",stock:1,cat:"racket",brand:"Bullpadel",name:"Hack Advance",price:400,shape:"round",weight:"371 გ",balance:"დაბალი",core:"EVAlastic",face:"Glaphite",level:1,r:[6.2,8,8],c:["#FFFFFF","#2A2A2A","#C1D885"],desc:"Hack-ის სერიის კონტროლის ვერსია, Round ფორმით."},
+ {id:"r7",stock:1,cat:"racket",brand:"Bullpadel",name:"Ionic Light 26",price:480,shape:"hybrid",weight:"360 გ",balance:"საშუალო",core:"Multieva",face:"Glaphite",level:1,r:[6.5,8,8],yt:"GNfiCVbhFE8",c:["#2B6651","#FFFFFF","#C1D885"],desc:"Ionic სერიის მსუბუქი ვერსია. სწრაფი რეაქცია ბადესთან."},
+ {id:"r8",stock:1,cat:"racket",brand:"Bullpadel",name:"Ionic Power 26",price:600,shape:"hybrid",weight:"362 გ",balance:"მაღალი",core:"Multieva",face:"Glaphite",level:2,r:[7.8,7.3,7],yt:"pNXPVuKgbn4",c:["#394150","#C1D885","#FFFFFF"],desc:"Ionic სერიის ძლიერი ვერსია თავდამსხმელი თამაშისთვის."},
+ {id:"r9",stock:1,cat:"racket",brand:"Lok",name:"Be Hype Gen 2",price:400,shape:"diamond",weight:"360–375 გ",balance:"მაღალი",core:"Custom EVA",face:"Fiberflex",level:2,r:[6.6,6.2,8],c:["#2A2A2A","#FFFFFF","#C1D885"],desc:"Diamond ფორმა და მაღალი ბალანსი ძლიერი სმეშისთვის."},
+ {id:"r10",stock:1,cat:"racket",brand:"Bullpadel",name:"XPLO 27",price:1200,shape:"hybrid",weight:"370 გ",balance:"მაღალი (270 მმ)",core:"Multieva",face:"X-Tend Carbon 3K",level:3,r:[9.9,8,5],yt:"qZDmDYZ4bow",c:["#2A2A2A","#C1D885","#2B6651"],desc:"Bullpadel-ის 2027 წლის ტოპ მოდელი. Power+ მაქსიმალური ძალისთვის."},
+ {id:"r11",stock:1,cat:"racket",brand:"Siux",name:"Diablo Elite 4",price:500,shape:"hybrid",weight:"350–375 გ",balance:"საშუალო",core:"EVA",face:"კარბონი 12K",level:3,r:[7.4,8.4,7],c:["#2A2A2A","#FFFFFF","#2B6651"],desc:"Siux Diablo სერიის Hybrid ჩოგანი 12K კარბონით. კონტროლისა და ძალის ბალანსი."},
  {id:"b1",stock:24,cat:"ball",brand:"Wilson",name:"Padel · 3 ბურთი",price:30,kind:"tube",c:["#C1D885","#2A2A2A"],desc:"Wilson-ის პადელის ბურთები, ტუბში 3 ცალი.",specs:[["რაოდენობა","3 ბურთი"],["ბრენდი","Wilson"]]},
  {id:"b2",stock:24,cat:"ball",brand:"Bullpadel",name:"Premium Pro · 3 ბურთი",price:30,kind:"tube",c:["#C1D885","#2B6651"],desc:"Bullpadel Premium Pro, პრემიუმ ბურთები სწრაფი თამაშისთვის. ტუბში 3 ცალი.",specs:[["რაოდენობა","3 ბურთი"],["ტიპი","Premium Pro"]]},
  {id:"b3",stock:5,cat:"ball",brand:"Wilson",name:"Padel · ყუთი 24 ტუბი",price:600,badge:"24 ტუბი",kind:"box",c:["#C1D885","#2A2A2A"],desc:"Wilson-ის პადელის ბურთების ყუთი: 24 ტუბი, სულ 72 ბურთი. იდეალურია გუნდისთვის ან ტრენერისთვის.",specs:[["რაოდენობა","24 ტუბი, 72 ბურთი"],["ბრენდი","Wilson"]]},
@@ -747,29 +763,49 @@ function renderCart(){
  $("#sub1").textContent=fmt(sub);$("#tot").textContent=fmt(sub);
 }
 function openCart(){$("#overlay").hidden=false;$("#drawer").hidden=false;$("#formMsg").innerHTML="";$("#closeCart").focus()}
-function closeAll(){$("#overlay").hidden=true;$("#drawer").hidden=true;$("#modal").hidden=true}
+function closeAll(){$("#overlay").hidden=true;$("#drawer").hidden=true;$("#modal").hidden=true;$("#mvid")?.remove()}
 
 /* modal */
 let mq=1;
 function openModal(id){
  const p=byId(id);mq=1;
- const rows=(p.cat==="racket"?[["ფორმა",SHAPE_NAME[p.shape]],["წონა",p.weight],["ბალანსი",p.balance],["ბირთვი",p.core],["ზედაპირი",p.face],["დონე",LEVEL_NAME[p.level]]]:(p.specs||[])).filter(r=>r[1]);
+ const rows=(p.cat==="racket"?[["ფორმა",SHAPE_NAME[p.shape]],["წონა",p.weight],["ბალანსი",p.balance],["ბირთვი",p.core],["ზედაპირი",p.face]]:(p.specs||[])).filter(r=>r[1]);
  $("#mbox").innerHTML=`${picHTML(p,"m"+id)}
   <div class="info"><div class="brandname eyebrow">${p.brand}</div><h3>${p.name}</h3>
    <div class="price num">${fmt(p.price)}${p.old?`<s>${fmt(p.old)}</s>`:""}</div>
    ${stockHTML(p,false)}
    <p>${p.desc}</p>
-   <dl>${rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}</dl>
+   ${rows.length?`${p.cat==="racket"?"<h4>ტექნიკური მახასიათებლები</h4>":""}<dl>${rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}</dl>`:""}
+   ${racketExtra(p)}
    <div class="mrow"><div class="qty"><button id="mdec" aria-label="შემცირება">−</button><span class="num" id="mq">1</span><button id="minc" aria-label="გაზრდა">+</button></div>
     <button class="add" id="madd"${left(p)<=0?" disabled":""}>${p.stock<=0?"ამოიწურა":p.price==null?"ფასი კლუბში":left(p)<=0?"ყველა უკვე კალათაშია":"კალათაში დამატება"}</button></div></div>
+  ${videoHTML(p)}
   <button class="x" id="mclose" aria-label="დახურვა">×</button>`;
- $("#mbox").setAttribute("aria-label",full(p));
+ $("#mbox").setAttribute("aria-label",full(p));$("#mbox").dataset.id=id;
  $("#overlay").hidden=false;$("#modal").hidden=false;$("#mclose").focus();
  $("#mdec").onclick=()=>{mq=Math.max(1,mq-1);$("#mq").textContent=mq};
  $("#minc").onclick=()=>{mq=Math.min(Math.max(1,left(p)),mq+1);$("#mq").textContent=mq};
  $("#madd").onclick=()=>{if(addToCart(id,mq))closeAll()};
  $("#mclose").onclick=closeAll;
- initGallery();
+ initGallery();initVideo();
+}
+function racketExtra(p){
+ if(p.cat!=="racket")return "";
+ const R=p.r?`<h4>შეფასება (1–10)</h4><div class="rates">${["Power","Control","Comfort"].map((n,i)=>`<div class="rate"><span>${n}</span><span class="bar" role="img" aria-label="${n}: ${p.r[i]} / 10"><i style="width:${p.r[i]*10}%"></i></span><b class="num">${p.r[i]}</b></div>`).join("")}</div>`:"";
+ const L=p.level?`<h4>რეკომენდირებული დონე</h4><div class="lvls">${Object.entries(LEVEL_NAME).map(([k,n])=>`<span${+k===p.level?' class="on" aria-current="true"':""}>${n}</span>`).join("")}</div>`:"";
+ return R+L;
+}
+function videoHTML(p){
+ if(!p.yt)return "";
+ return `<div class="mvid" id="mvid"><h4>ვიდეომიმოხილვა</h4>
+  <div class="yt"><button type="button" id="ytplay" aria-label="ვიდეოს ჩართვა: ${full(p)}"><img src="https://i.ytimg.com/vi/${p.yt}/hqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer"><span class="play"></span></button></div>
+  <a href="https://www.youtube.com/watch?v=${p.yt}" target="_blank" rel="noopener">YouTube-ზე ნახვა ↗</a></div>`;
+}
+function initVideo(){
+ const b=$("#ytplay");if(!b)return;
+ const id=byId($("#mbox").dataset.id).yt;
+ b.querySelector("img").onerror=()=>$("#mvid").remove();
+ b.onclick=()=>{b.parentNode.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" title="ვიდეომიმოხილვა" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`};
 }
 function picHTML(p,u){
  const ex=GAL[p.id]||[];
@@ -856,7 +892,7 @@ $("#checkout").addEventListener("submit",e=>{
 
 /* ===== racket assistant ===== */
 const CATALOG=P.map(p=>p.cat==="racket"
- ?{id:p.id,type:"racket",brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock,shape:p.shape,weight:p.weight,balance:p.balance,core:p.core,face:p.face,level:LEVEL_NAME[p.level],note:p.desc}
+ ?{id:p.id,type:"racket",brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock,shape:p.shape,weight:p.weight,balance:p.balance,core:p.core,face:p.face,level:LEVEL_NAME[p.level],ratings_1_10:p.r?{power:p.r[0],control:p.r[1],comfort:p.r[2]}:null,note:p.desc}
  :{id:p.id,type:p.cat,brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock});
 const RULES=`You are the racket-fitting assistant of the Padelbade padel club online shop (Tbilisi, Georgia).
 Reply in the customer's language; default to Georgian. Be warm and short: at most about 80 words per reply, plain text, no headings, no tables.
