@@ -125,7 +125,15 @@ button{cursor:pointer}
 .search input{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px 10px 36px}
 .search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted)}
 select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px}
-.subfilters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:-8px 0 22px;font-size:13px;color:var(--muted)}
+.subfilters{display:flex;flex-direction:column;gap:10px;margin:-8px 0 22px;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-size:13px;color:var(--muted)}
+.subfilters .fg{display:flex;gap:6px 8px;flex-wrap:wrap;align-items:center}
+.subfilters .fg>span{min-width:120px;font-weight:700;color:var(--fg)}
+.subfilters .mini small{font-weight:500;opacity:.6;margin-left:4px}
+.subfilters .mini:disabled{opacity:.4;cursor:default}
+.subfilters .fhead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;color:var(--fg)}
+.subfilters .clear{border:0;background:none;color:var(--court);font-weight:700;font-size:13px;text-decoration:underline;padding:0;cursor:pointer}
+.subfilters .note{font-size:12px}
+@media (max-width:560px){.subfilters .fg>span{min-width:0;flex-basis:100%}}
 .subfilters .mini{border:1px solid var(--line);background:none;border-radius:6px;padding:5px 10px;font-size:13px;font-weight:600}
 .subfilters .mini[aria-pressed="true"]{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
 .subfilters .sep{width:1px;height:18px;background:var(--line);margin:0 4px}
@@ -521,6 +529,8 @@ const CATS=[
   ["shoe","ფეხსაცმელი"],["wear","ტანსაცმელი"],["acc","აქსესუარები"]];
 const SHAPE_NAME={round:"Round",tear:"Teardrop",hybrid:"Hybrid",diamond:"Diamond"};
 const LEVEL_NAME={1:"დამწყები",2:"საშუალო",3:"მოწინავე"};
+const BAL_NAME={low:"დაბალი",mid:"საშუალო",high:"მაღალი"};
+const STYLE_NAME={control:"კონტროლი",allround:"უნივერსალური",power:"შეტევა"};
 
 const P=[
  {id:"r1",stock:1,cat:"racket",brand:"Babolat",name:"Stima Vita",price:300,shape:"round",weight:"345 გ",balance:"დაბალი",core:"EVA",face:"მინაბოჭკო",level:1,c:["#2A2A2A","#C1D885","#FFFFFF"],desc:"მსუბუქი ჩოგანი დიდი sweet spot-ით და Hybrid ჩარჩოთი. კომფორტული დამწყებთათვის."},
@@ -636,7 +646,23 @@ const full=p=>(p.brand?p.brand+" ":"")+p.name;
 const byId=id=>P.find(p=>p.id===id);
 
 /* state */
-let state={cat:"all",q:"",sort:"pop",shape:null,level:null,instock:false,brand:null};
+let state={cat:"all",q:"",sort:"pop",shape:null,level:null,instock:false,brand:null,price:null,weight:null,balance:null,style:null};
+/* racket filters: [state key, label, options [value,label], test] */
+const grams=p=>parseInt(p.weight)||null;
+const balOf=p=>p.balance?Object.keys(BAL_NAME).find(k=>p.balance.startsWith(BAL_NAME[k]))||null:null;
+// play style isn't stored per racket yet, so derive it from balance and shape unless p.style is set
+const styleOf=p=>p.style||(balOf(p)==="low"||p.shape==="round"?"control":balOf(p)==="high"||p.shape==="diamond"?"power":"allround");
+const FILTERS=[
+ ["brand","ბრენდი",()=>[...new Set(P.filter(p=>p.cat==="racket"&&p.brand).map(p=>p.brand))].map(b=>[b,b]),(p,v)=>p.brand===v],
+ ["price","ფასი",()=>[["lo","400 ₾-მდე"],["mid","401–600 ₾"],["hi","600 ₾-ზე მეტი"]],(p,v)=>p.price!=null&&(v==="lo"?p.price<=400:v==="mid"?p.price>400&&p.price<=600:p.price>600)],
+ ["weight","წონა",()=>[["lo","355 გ-მდე"],["mid","356–365 გ"],["hi","366 გ-ზე მეტი"]],(p,v)=>{const g=grams(p);return g!=null&&(v==="lo"?g<=355:v==="mid"?g>355&&g<=365:g>365)}],
+ ["shape","ფორმა",()=>Object.entries(SHAPE_NAME),(p,v)=>p.shape===v],
+ ["balance","ბალანსი",()=>Object.entries(BAL_NAME),(p,v)=>balOf(p)===v],
+ ["level","მოთამაშის დონე",()=>Object.entries(LEVEL_NAME),(p,v)=>String(p.level)===String(v)],
+ ["style","თამაშის სტილი",()=>Object.entries(STYLE_NAME),(p,v)=>styleOf(p)===v],
+];
+const resetF=()=>FILTERS.forEach(([k])=>state[k]=null);
+const passF=(p,skip)=>FILTERS.every(([k,,,test])=>k===skip||state[k]==null||test(p,state[k]));
 const left=p=>p.price==null?0:Math.max(0,p.stock-(cart[p.id]||0));
 function stockHTML(p,bar){
  const n=p.stock;
@@ -660,9 +686,13 @@ function renderSub(){
  const s=$("#sub");
  if(state.cat!=="racket"){s.hidden=true;return}
  s.hidden=false;
- const BR=[...new Set(P.filter(p=>p.cat==="racket"&&p.brand).map(p=>p.brand))];
- s.innerHTML=`<span>ბრენდი:</span>`+BR.map(b=>`<button class="mini" data-brand="${b}" aria-pressed="${state.brand===b}">${b}</button>`).join("")+`<span class="sep"></span><span>ფორმა:</span>`+Object.entries(SHAPE_NAME).map(([k,n])=>`<button class="mini" data-shape="${k}" aria-pressed="${state.shape===k}">${n}</button>`).join("")
- +`<span class="sep"></span><span>დონე:</span>`+Object.entries(LEVEL_NAME).map(([k,n])=>`<button class="mini" data-level="${k}" aria-pressed="${String(state.level)===k}">${n}</button>`).join("");
+ const base=P.filter(p=>p.cat==="racket"&&(!state.instock||p.stock>0));
+ const active=FILTERS.some(([k])=>state[k]!=null);
+ s.innerHTML=`<div class="fhead">ფილტრები${active?`<button class="clear" data-clearf="1">გასუფთავება</button>`:""}</div>`
+ +FILTERS.map(([k,label,opts,test])=>`<div class="fg" role="group" aria-label="${label}"><span>${label}:</span>`+opts().map(([v,n])=>{
+  const on=String(state[k])===String(v),c=base.filter(p=>passF(p,k)&&test(p,v)).length;
+  return `<button class="mini" data-f="${k}" data-v="${v}" aria-pressed="${on}"${!c&&!on?" disabled":""}>${n}<small class="num">${c}</small></button>`}).join("")+`</div>`).join("")
+ +(state.weight?`<div class="note">წონის ფილტრი აჩვენებს მხოლოდ იმ ჩოგნებს, რომელთა წონაც მითითებულია.</div>`:"");
 }
 function specChips(p){
  if(p.cat==="racket")return [SHAPE_NAME[p.shape],p.weight,LEVEL_NAME[p.level]].filter(Boolean);
@@ -671,9 +701,7 @@ function specChips(p){
 function renderGrid(){
  let list=P.filter(p=>state.cat==="all"||p.cat===state.cat);
  if(state.cat==="racket"){
-  if(state.shape)list=list.filter(p=>p.shape===state.shape);
-  if(state.level)list=list.filter(p=>String(p.level)===String(state.level));
-  if(state.brand)list=list.filter(p=>p.brand===state.brand);
+  list=list.filter(p=>passF(p));
  }
  const q=state.q.trim().toLowerCase();
  if(q)list=list.filter(p=>(full(p)).toLowerCase().includes(q));
@@ -682,7 +710,7 @@ function renderGrid(){
  if(state.sort==="desc")list=[...list].sort((a,b)=>(b.price??-1)-(a.price??-1));
  list=[...list].sort((a,b)=>(a.stock>0?0:1)-(b.stock>0?0:1));
  $("#shopTitle").textContent=state.brand&&state.cat==="racket"?state.brand+" ჩოგნები":state.cat==="all"?"ყველა პროდუქტი":CATS.find(c=>c[0]===state.cat)[1];
- if(!list.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1">ამ ფილტრით პროდუქტი ვერ მოიძებნა. სცადე სხვა ფორმა ან დონე.</div>`;return}
+ if(!list.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1">ამ ფილტრით პროდუქტი ვერ მოიძებნა. სცადე სხვა კომბინაცია ან გაასუფთავე ფილტრები.</div>`;return}
  $("#grid").innerHTML=list.map(p=>`
   <article class="card${p.stock<=0?" soldout":""}">
    <button class="pic" data-open="${p.id}" aria-label="${full(p)} — დეტალები">${p.stock<=0?`<span class="badge sale">ამოიწურა</span>`:p.old?`<span class="badge sale">-${Math.round((1-p.price/p.old)*100)}%</span>`:p.badge?`<span class="badge">${p.badge}</span>`:""}${art(p,"c"+p.id)}</button>
@@ -784,13 +812,12 @@ $("#shapes").innerHTML=GUIDE.map(g=>{
 /* events */
 document.addEventListener("click",e=>{
  const t=e.target.closest("button");if(!t)return;
- if(t.dataset.cat){state.cat=t.dataset.cat;state.shape=null;state.level=null;state.brand=null;renderAll()}
+ if(t.dataset.cat){state.cat=t.dataset.cat;resetF();renderAll()}
  else if(t.dataset.brand){
-  if(t.dataset.jump){state.cat="racket";state.brand=t.dataset.brand;state.shape=null;state.level=null;state.q="";$("#q").value="";renderAll();$("#shop").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
-  else{state.brand=state.brand===t.dataset.brand?null:t.dataset.brand;renderSub();renderGrid()}
+  if(t.dataset.jump){state.cat="racket";resetF();state.brand=t.dataset.brand;state.q="";$("#q").value="";renderAll();$("#shop").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
  }
- else if(t.dataset.shape){state.shape=state.shape===t.dataset.shape?null:t.dataset.shape;renderSub();renderGrid()}
- else if(t.dataset.level){state.level=String(state.level)===t.dataset.level?null:t.dataset.level;renderSub();renderGrid()}
+ else if(t.dataset.f){const k=t.dataset.f;state[k]=String(state[k])===t.dataset.v?null:t.dataset.v;renderSub();renderGrid()}
+ else if(t.dataset.clearf){resetF();renderSub();renderGrid()}
  else if(t.dataset.add){addToCart(t.dataset.add);t.classList.add("done");t.lastChild.textContent="დაემატა";setTimeout(()=>{t.classList.remove("done");t.lastChild.textContent="კალათაში"},1400)}
  else if(t.dataset.open){openModal(t.dataset.open)}
  else if(t.dataset.inc){addToCart(t.dataset.inc,1)}
@@ -798,7 +825,7 @@ document.addEventListener("click",e=>{
  else if(t.dataset.rm){delete cart[t.dataset.rm];save();renderCart();renderGrid()}
  else if(t.dataset.bot){openBot()}
  else if(t.dataset.qr!==undefined){onQuick(t.dataset.qr,t.textContent)}
- else if(t.dataset.goshape){state.cat="racket";state.brand=null;state.shape=t.dataset.goshape;state.level=null;renderAll();$("#shop").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
+ else if(t.dataset.goshape){state.cat="racket";resetF();state.shape=t.dataset.goshape;renderAll();$("#shop").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
 });
 $("#openCart").onclick=openCart;
 {const mb=$("#menuBtn"),nv=$("#mainNav");mb.onclick=()=>{const o=nv.classList.toggle("open");mb.setAttribute("aria-expanded",o)};nv.addEventListener("click",e=>{if(e.target.closest("a")){nv.classList.remove("open");mb.setAttribute("aria-expanded","false")}})}
@@ -806,7 +833,7 @@ $("#closeCart").onclick=closeAll;$("#overlay").onclick=closeAll;
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAll()});
 $("#q").addEventListener("input",e=>{state.q=e.target.value;renderGrid()});
 $("#sort").addEventListener("change",e=>{state.sort=e.target.value;renderGrid()});
-$("#instock").addEventListener("change",e=>{state.instock=e.target.checked;renderGrid()});
+$("#instock").addEventListener("change",e=>{state.instock=e.target.checked;renderSub();renderGrid()});
 
 const payMode=()=>document.querySelector('input[name="pay"]:checked').value;
 function syncPay(){const bank=payMode()==="bank";$("#bankBox").hidden=!bank;$("#caddr").hidden=!bank;$("#totLabel").textContent=bank?"გადასარიცხი თანხა":"გადასახდელი კრწანისში";$("#coBtn").textContent=bank?"შეკვეთის გაფორმება":"დაჯავშნე აღებისთვის";$("#formMsg").innerHTML=""}
