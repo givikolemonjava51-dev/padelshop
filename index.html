@@ -291,7 +291,6 @@ footer a{color:var(--lime);text-decoration:none}
 .rate .bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
 .rate .bar i{display:block;height:100%;background:var(--lime);border-radius:4px}
 .rate b{text-align:right;font-family:"Montserrat",sans-serif;font-weight:800}
-.rnote{font-size:12px;color:var(--muted);margin:0}
 .lvls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .lvls span{text-align:center;font-size:13px;font-weight:600;padding:7px 4px;border-radius:8px;border:1px solid var(--line);color:var(--muted)}
 .lvls span.on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
@@ -537,10 +536,10 @@ const CATS=[
   ["all","ყველა"],["racket","ჩოგნები"],["ball","ბურთები"],["bag","ჩანთები"],
   ["shoe","ფეხსაცმელი"],["wear","ტანსაცმელი"],["acc","აქსესუარები"]];
 const SHAPE_NAME={round:"Round",tear:"Teardrop",hybrid:"Hybrid",diamond:"Diamond"};
-const LEVEL_NAME={1:"დამწყები",2:"საშუალო",3:"მოწინავე"};
+const LEVEL_NAME={1:"Beginner",2:"Intermediate",3:"Advanced"};
 
 const P=[
- {id:"r1",stock:1,cat:"racket",brand:"Babolat",name:"Stima Vita",price:300,shape:"round",weight:"345 გ",balance:"დაბალი",core:"EVA",face:"მინაბოჭკო",level:1,r:[5,8,9],rs:"est",yt:"jjHCP84tIGI",c:["#2A2A2A","#C1D885","#FFFFFF"],desc:"მსუბუქი ჩოგანი დიდი sweet spot-ით და Hybrid ჩარჩოთი. კომფორტული დამწყებთათვის."},
+ {id:"r1",stock:1,cat:"racket",brand:"Babolat",name:"Stima Vita",price:300,shape:"round",weight:"345 გ",balance:"დაბალი",core:"EVA",face:"მინაბოჭკო",level:1,r:[5,8,9],yt:"jjHCP84tIGI",c:["#2A2A2A","#C1D885","#FFFFFF"],desc:"მსუბუქი ჩოგანი დიდი sweet spot-ით და Hybrid ჩარჩოთი. კომფორტული დამწყებთათვის."},
  {id:"r2",stock:1,cat:"racket",brand:"Babolat",name:"Air Viper",price:1000,shape:"tear",weight:"360–375 გ",balance:"საშუალო",core:"X-EVA",face:"კარბონი 16K",level:3,r:[9.7,8.4,6],yt:"YG08aoalavc",c:["#FFFFFF","#2B6651","#2A2A2A"],desc:"Babolat-ის ტოპ მოდელი. Teardrop ფორმა და 16K კარბონი ძლიერი თავდასხმისთვის."},
  {id:"r3",stock:1,cat:"racket",brand:"Head",name:"Coello Vibe 2026",price:480,shape:"tear",weight:"355 გ",balance:"საშუალო (272 მმ)",core:"Foam",face:"მინაბოჭკო",level:1,r:[7.1,6.9,8],yt:"cxbEOYDprjA",c:["#2A2A2A","#C1D885","#2B6651"],desc:"Teardrop ფორმა ძალისა და კონტროლის ბალანსით."},
  {id:"r4",stock:1,cat:"racket",brand:"Head",name:"Vibe 2026",price:320,shape:"tear",weight:"360–370 გ",balance:"საშუალო (265 მმ)",core:"Foam",face:"მინაბოჭკო",level:1,r:[6.5,7,9],yt:"uVO7FSJDvv8",c:["#2B6651","#C1D885","#FFFFFF"],desc:"დაბალი ბალანსი და მარტივი კონტროლი. კარგი პირველი ჩოგანი."},
@@ -764,9 +763,8 @@ function openModal(id){
 }
 function racketExtra(p){
  if(p.cat!=="racket")return "";
- const R=p.r?`<h4>შეფასება (1–10)</h4><div class="rates">${["Power","Control","Comfort"].map((n,i)=>`<div class="rate"><span>${n}</span><span class="bar" role="img" aria-label="${n}: ${p.r[i]} / 10"><i style="width:${p.r[i]*10}%"></i></span><b class="num">${p.r[i]}</b></div>`).join("")}</div>
-  <p class="rnote">${p.rs==="est"?"ჩვენი შეფასება მწარმოებლის აღწერის მიხედვით.":"Power და Control: Padelful-ის მიმოხილვა. Comfort: ჩვენი შეფასება ბირთვის სიმყარისა და წონის მიხედვით."}</p>`:"";
- const L=p.level?`<h4>რეკომენდებული დონე</h4><div class="lvls">${Object.entries(LEVEL_NAME).map(([k,n])=>`<span${+k===p.level?' class="on" aria-current="true"':""}>${n}</span>`).join("")}</div>`:"";
+ const R=p.r?`<h4>შეფასება (1–10)</h4><div class="rates">${["Power","Control","Comfort"].map((n,i)=>`<div class="rate"><span>${n}</span><span class="bar" role="img" aria-label="${n}: ${p.r[i]} / 10"><i style="width:${p.r[i]*10}%"></i></span><b class="num">${p.r[i]}</b></div>`).join("")}</div>`:"";
+ const L=p.level?`<h4>რეკომენდირებული დონე</h4><div class="lvls">${Object.entries(LEVEL_NAME).map(([k,n])=>`<span${+k===p.level?' class="on" aria-current="true"':""}>${n}</span>`).join("")}</div>`:"";
  return R+L;
 }
 function videoHTML(p){
@@ -808,9 +806,9 @@ let tt;function toast(h){const t=$("#toast");t.innerHTML=h;t.hidden=false;clearT
 
 /* guide */
 const GUIDE=[
- {s:"round",lvl:"დამწყები → საშუალო",txt:"ბალანსი სახელურთან ახლოსაა და sweet spot დიდია. მეტი კონტროლი, ნაკლები შეცდომა.",m:[3,1,3]},
- {s:"tear",lvl:"საშუალო → მოწინავე",txt:"ძალისა და კონტროლის შუალედი. უხდება მოთამაშეს, რომელიც ორივე ზონაში თამაშობს.",m:[2,2,2]},
- {s:"diamond",lvl:"მოწინავე",txt:"მაღალი ბალანსი და მცირე sweet spot. მაქსიმალური ძალა სმეშისა და ვოლეისთვის.",m:[1,3,1]},
+ {s:"round",lvl:"Beginner → Intermediate",txt:"ბალანსი სახელურთან ახლოსაა და sweet spot დიდია. მეტი კონტროლი, ნაკლები შეცდომა.",m:[3,1,3]},
+ {s:"tear",lvl:"Intermediate → Advanced",txt:"ძალისა და კონტროლის შუალედი. უხდება მოთამაშეს, რომელიც ორივე ზონაში თამაშობს.",m:[2,2,2]},
+ {s:"diamond",lvl:"Advanced",txt:"მაღალი ბალანსი და მცირე sweet spot. მაქსიმალური ძალა სმეშისა და ვოლეისთვის.",m:[1,3,1]},
 ];
 $("#shapes").innerHTML=GUIDE.map(g=>{
  const demo={shape:g.s,c:["#2A2A2A","#C1D885","#2B6651"],cat:"racket"};
