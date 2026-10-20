@@ -544,8 +544,7 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
 
 <script>
 const CATS=[
-  ["all","ყველა"],["racket","ჩოგნები"],["ball","ბურთები"],["bag","ჩანთები"],
-  ["shoe","ფეხსაცმელი"],["wear","ტანსაცმელი"],["acc","აქსესუარები"]];
+  ["all","ყველა"],["racket","ჩოგნები"],["ball","ბურთები"],["bag","ჩანთები"]];
 const SHAPE_NAME={round:"Round",tear:"Teardrop",hybrid:"Hybrid",diamond:"Diamond"};
 const LEVEL_NAME={1:"Beginner",2:"Intermediate",3:"Advanced"};
 const BAL_NAME={low:"დაბალი",mid:"საშუალო",high:"მაღალი"};
@@ -576,13 +575,6 @@ const P=[
  {id:"b4x",of:"b4",hidden:true,stock:99,open:true,cat:"ball",brand:"Bullpadel",name:"FIP Next · ყუთი",price:650,badge:"24 ქილა",kind:"box",c:["#C1D885","#2A2A2A"],desc:"Bullpadel FIP Next: პადელის საერთაშორისო ფედერაციის (FIP) ოფიციალური ბურთი. ყუთში 24 ქილაა, სულ 72 ბურთი. ცალ-ცალკე ყიდვასთან შედარებით 70 ₾-ს დაზოგავ.",specs:[["შეფუთვა","24 ქილა, 72 ბურთი"]]},
  {id:"g1",stock:2,cat:"bag",brand:"Bullpadel",name:"Ionic ჩანთა",price:200,kind:"thermo",c:["#2A2A2A","#E8622C"],desc:"Bullpadel BPP-25005 Ionic (2025): ტევადი ჩანთა რამდენიმე ჩოგნისთვის, თერმო განყოფილებით, ვენტილირებადი ფეხსაცმლის ჯიბით და დამატებითი ჯიბეებით აქსესუარებისთვის.",specs:[["მოდელი","BPP-25005 Ionic"],["ფერი","შავი / ნარინჯისფერი"],["განყოფილებები","თერმო + ფეხსაცმელი + აქსესუარები"],["მასალა","გამძლე პოლიესტერი"]]},
  {id:"g2",stock:3,cat:"bag",brand:"Bullpadel",name:"APA ჩანთა",price:200,kind:"thermo",c:["#1F2A44","#7FB2E5"],desc:"Bullpadel BPP-22005 APA: არგენტინის პადელის ასოციაციის (APA) ოფიციალური ჩანთა, მუქი ლურჯი ღია ლურჯი დეტალებით. თერმო ჯიბე ჩოგნებისთვის და დიდი სივრცე ფორმისა და აქსესუარებისთვის.",specs:[["მოდელი","BPP-22005 APA"],["ფერი","მუქი ლურჯი"],["ზომა","60 × 30 × 40 სმ"],["განყოფილებები","Thermopocket + მთავარი"],["მასალა","680D პოლიესტერი"]]},
- {id:"s1",stock:6,cat:"shoe",brand:"Asics",name:"Gel-Padel Pro 5",price:399,kind:"shoe",c:["#FFFFFF","#2B6651"],desc:"ქუსლის ამორტიზაცია და ქვიშიან ხელოვნურ ბალახზე მოჭიდება.",specs:[["ზომები","39–46"],["ძირი","Herringbone, padel"]]},
- {id:"s2",stock:0,cat:"shoe",brand:"Babolat",name:"Movea",price:349,old:389,kind:"shoe",c:["#2A2A2A","#C1D885"],desc:"მსუბუქი და მოქნილი, სწრაფი გადაადგილებისთვის.",specs:[["ზომები","38–45"]]},
- {id:"w1",stock:25,cat:"wear",brand:"Padelbade",name:"კლუბის მაისური",price:69,badge:"კლუბის",kind:"tee",c:["#2B6651","#C1D885"],desc:"სუნთქვადი სპორტული ქსოვილი Padelbade-ის ლოგოთი.",specs:[["ზომები","XS–XXL"],["მასალა","100% პოლიესტერი"]]},
- {id:"w2",stock:12,cat:"wear",brand:"Padelbade",name:"კლუბის ჰუდი",price:129,badge:"კლუბის",kind:"hoodie",c:["#2A2A2A","#C1D885"],desc:"თბილი ჰუდი თამაშის შემდეგ ან ზამთრის ტურნირებზე.",specs:[["ზომები","S–XXL"],["მასალა","ბამბა / პოლიესტერი"]]},
- {id:"a1",stock:60,cat:"acc",brand:"Bullpadel",name:"ოვერგრიპი · 3 ცალი",price:15,kind:"grip",c:["#C1D885","#FFFFFF"],desc:"ოფლის შთამნთქმელი, უკეთესი მოჭიდებისთვის.",specs:[["რაოდენობა","3 ცალი"]]},
- {id:"a2",stock:15,cat:"acc",brand:"Nox",name:"ჩარჩოს დამცავი ლენტი",price:19,kind:"tape",c:["#2A2A2A","#C1D885"],desc:"იცავს ჩოგნის ჩარჩოს კედელზე და იატაკზე დარტყმისგან.",specs:[["სიგრძე","1 ჩოგანზე"]]},
- {id:"a3",stock:20,cat:"acc",brand:"Padelbade",name:"მაჯის სამაჯური",price:15,kind:"band",c:["#2B6651","#C1D885"],desc:"ფრთხილად შეკერილი ფროტეს სამაჯური კლუბის ლოგოთი.",specs:[["რაოდენობა","1 წყვილი"]]},
 ];
 
 const SHAPES={
@@ -620,12 +612,6 @@ function otherSVG(p){
   case "box":g=`<path d="M30,90 L100,58 L170,90 L170,200 L100,232 L30,200Z" fill="${b}"/><path d="M30,90 L100,122 L170,90 L100,58Z" fill="#fff" opacity=".12"/><path d="M100,122 L100,232" stroke="#2A2A2A" opacity=".25" stroke-width="2"/>${ball(64,150,20,a)}${ball(136,150,20,a)}<text x="100" y="212" font-family="Montserrat,sans-serif" font-size="13" font-weight="800" fill="${a}" text-anchor="middle">×24</text>`;break;
   case "thermo":g=`<rect x="20" y="80" width="160" height="110" rx="40" fill="${a}"/><path d="M30,120 C60,104 140,104 170,120" stroke="${b}" stroke-width="5" fill="none"/><rect x="70" y="140" width="60" height="26" rx="6" fill="${b}"/><path d="M60,82 C60,50 140,50 140,82" stroke="${a}" stroke-width="10" fill="none"/>`;break;
   case "backpack":g=`<path d="M60,60 C60,36 140,36 140,60" stroke="${a}" stroke-width="10" fill="none"/><rect x="45" y="58" width="110" height="170" rx="30" fill="${a}"/><rect x="62" y="140" width="76" height="66" rx="14" fill="#2A2A2A" opacity=".25"/><rect x="62" y="96" width="76" height="10" rx="5" fill="${b}"/>`;break;
-  case "shoe":g=`<path d="M22,150 C22,120 46,104 70,104 L98,82 C112,92 126,110 150,118 C170,124 182,136 182,154 L182,168 L22,168Z" fill="${a}" stroke="#2A2A2A" stroke-opacity=".15" stroke-width="2"/><rect x="18" y="164" width="168" height="18" rx="9" fill="${b}"/><path d="M80,104 L120,128 M92,96 L130,120" stroke="${b}" stroke-width="5"/><path d="M40,150 L150,150" stroke="${b}" stroke-width="3" opacity=".6"/>`;break;
-  case "tee":g=`<path d="M70,40 L50,48 L18,82 L42,106 L58,92 L58,220 L142,220 L142,92 L158,106 L182,82 L150,48 L130,40 C122,56 78,56 70,40Z" fill="${a}"/><path d="M70,40 C78,56 122,56 130,40" stroke="${b}" stroke-width="5" fill="none"/><text x="100" y="128" font-family="Montserrat,sans-serif" font-size="30" font-weight="900" fill="${b}" text-anchor="middle">B</text>`;break;
-  case "hoodie":g=`<path d="M72,44 L50,52 L20,150 L44,158 L60,104 L60,226 L140,226 L140,104 L156,158 L180,150 L150,52 L128,44 C126,22 74,22 72,44Z" fill="${a}"/><path d="M76,46 C80,70 120,70 124,46" stroke="${b}" stroke-width="4" fill="none"/><rect x="74" y="170" width="52" height="30" rx="6" fill="#2A2A2A" opacity=".25"/><text x="100" y="138" font-family="Montserrat,sans-serif" font-size="26" font-weight="900" fill="${b}" text-anchor="middle">B</text>`;break;
-  case "grip":g=`<circle cx="100" cy="130" r="80" fill="${a}"/><circle cx="100" cy="130" r="58" fill="none" stroke="#2A2A2A" stroke-opacity=".12" stroke-width="10"/><circle cx="100" cy="130" r="36" fill="none" stroke="#2A2A2A" stroke-opacity=".12" stroke-width="10"/><circle cx="100" cy="130" r="14" fill="${b}"/>`;break;
-  case "tape":g=`<circle cx="100" cy="130" r="80" fill="${a}"/><circle cx="100" cy="130" r="40" style="fill:var(--tile)"/><path d="M160,180 L196,220 L184,232 L150,190Z" fill="${a}"/><circle cx="100" cy="130" r="62" fill="none" stroke="${b}" stroke-width="5"/>`;break;
-  case "band":g=`<ellipse cx="100" cy="130" rx="80" ry="54" fill="${a}"/><ellipse cx="100" cy="122" rx="56" ry="32" style="fill:var(--tile)"/><text x="100" y="172" font-family="Montserrat,sans-serif" font-size="18" font-weight="900" fill="${b}" text-anchor="middle">B</text>`;break;
  }
  return `<svg viewBox="0 0 200 262" aria-hidden="true">${g}</svg>`;
 }
@@ -945,7 +931,7 @@ Goal: recommend the best padel racket from THIS catalog only.
 - Once you know enough, recommend 1 to 3 rackets. For each: one sentence on why it fits, then the token [[id]] alone on its own line. The page turns the token into a product card with picture, price and an add-to-cart button, so never write prices yourself.
 - Never invent products, prices, discounts or specs. Only use ids from the catalog. A null field means unknown: do not guess it. price_gel null means the price is given at the club.
 Fitting knowledge: round shape + low balance + soft EVA = control, big sweet spot, best for beginners, easier on the elbow. Teardrop = balance of control and power, intermediate. Diamond + high balance + hard EVA = maximum power, advanced players, harder on the elbow. Lighter rackets suit beginners and players with arm pain.
-You may briefly suggest one useful extra (balls, overgrip, frame protector, bag) the same way with [[id]], only when it fits.
+You may briefly suggest one useful extra (balls or a bag) the same way with [[id]], only when it fits.
 Stock: in_stock is the number of units left. Never recommend an item with in_stock 0; if a racket is low (1-3), you may mention that only a few are left.
 Buying options: (1) reserve online, pick up and pay at the Padelbade Krtsanisi branch (open daily 08:00-01:00); or (2) pay online by bank transfer (TBC or Bank of Georgia, recipient შპს პადელბადე რუსთავი, account numbers are shown in the cart), then the club contacts the customer and ships the racket. No pickup at other branches.
 Court bookings: point to padelbade.com. Off-topic questions: politely steer back to rackets.
