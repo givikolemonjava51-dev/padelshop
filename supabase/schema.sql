@@ -29,6 +29,13 @@ create table if not exists public.orders (
 );
 create index if not exists orders_created_at_idx on public.orders (created_at desc);
 
+-- Stock is taken off when staff confirm an order, not when the customer sends it.
+-- Orders stored before this column existed already took their stock (unless cancelled).
+alter table public.orders add column if not exists stock_taken boolean;
+update public.orders set stock_taken = (status <> 'cancelled') where stock_taken is null;
+alter table public.orders alter column stock_taken set default false;
+alter table public.orders alter column stock_taken set not null;
+
 -- Staff who may open /admin. Add a row per person (lower-case e-mail).
 create table if not exists public.staff (
   email      text primary key check (email = lower(email)),
@@ -87,7 +94,8 @@ create trigger products_touch before update on public.products
   for each row execute function public.products_touch();
 
 -- ---------- place an order (called by the shop page) ----------
--- Checks stock, takes it off and stores the order in one transaction.
+-- Refuses items that are already sold out and stores the order as "new".
+-- Stock is not taken here: staff check it and confirm the order in /admin.
 create or replace function public.place_order(p_name text, p_phone text, p_address text, p_pay text, p_items jsonb)
 returns jsonb
 language plpgsql security definer set search_path = public
@@ -114,7 +122,7 @@ begin
   for it in select * from jsonb_array_elements(p_items) order by value->>'id' loop
     qty := (it->>'qty')::integer;
     if qty is null or qty < 1 or qty > 999 then raise exception 'bad_qty'; end if;
-    select * into pr from public.products where id = it->>'id' for update;
+    select * into pr from public.products where id = it->>'id';
     if not found or pr.price is null then raise exception 'unknown_item'; end if;
     if pr.stock < qty then
       short := short || jsonb_build_object('id', pr.id, 'stock', pr.stock);
@@ -128,18 +136,13 @@ begin
     return jsonb_build_object('ok', false, 'error', 'out_of_stock', 'short', short);
   end if;
 
-  for it in select * from jsonb_array_elements(lines) loop
-    update public.products set stock = stock - (it->>'qty')::integer, updated_by = 'order'
-      where id = it->>'id';
-  end loop;
-
   loop
     ord_no := 'PB-' || lpad((floor(random() * 100000))::int::text, 5, '0');
     exit when not exists (select 1 from public.orders where no = ord_no);
   end loop;
 
-  insert into public.orders (no, name, phone, address, pay, items, total)
-  values (ord_no, p_name, p_phone, nullif(btrim(coalesce(p_address,'')), ''), p_pay, lines, sum_);
+  insert into public.orders (no, name, phone, address, pay, items, total, stock_taken)
+  values (ord_no, p_name, p_phone, nullif(btrim(coalesce(p_address,'')), ''), p_pay, lines, sum_, false);
 
   return jsonb_build_object('ok', true, 'no', ord_no, 'total', sum_,
     'stock', (select jsonb_object_agg(id, stock) from public.products));
@@ -149,7 +152,8 @@ revoke all on function public.place_order(text,text,text,text,jsonb) from public
 grant execute on function public.place_order(text,text,text,text,jsonb) to anon, authenticated;
 
 -- ---------- change an order's status (dashboard) ----------
--- Cancelling puts the items back in stock; un-cancelling takes them out again.
+-- Confirming (or marking done) takes the items out of stock and fails with out_of_stock
+-- if there is not enough; moving back to "new" or cancelling puts them back.
 create or replace function public.set_order_status(p_id bigint, p_status text, p_note text default null)
 returns public.orders
 language plpgsql security definer set search_path = public
@@ -158,23 +162,26 @@ declare
   o  public.orders%rowtype;
   it jsonb;
   sign_ integer := 0;
+  take boolean;
 begin
   if not public.is_staff() then raise exception 'not_staff'; end if;
   if p_status not in ('new','confirmed','done','cancelled') then raise exception 'bad_status'; end if;
   select * into o from public.orders where id = p_id for update;
   if not found then raise exception 'not_found'; end if;
 
-  if o.status <> 'cancelled' and p_status = 'cancelled' then sign_ := 1; end if;
-  if o.status = 'cancelled' and p_status <> 'cancelled' then sign_ := -1; end if;
+  -- saving a note keeps the status and leaves stock alone
+  take := case when p_status = o.status then o.stock_taken else p_status in ('confirmed','done') end;
+  if take and not o.stock_taken then sign_ := -1; end if;
+  if not take and o.stock_taken then sign_ := 1; end if;
 
   if sign_ <> 0 then
-    for it in select * from jsonb_array_elements(o.items) loop
+    for it in select * from jsonb_array_elements(o.items) order by value->>'id' loop
       update public.products set stock = stock + sign_ * (it->>'qty')::integer
         where id = it->>'id';
     end loop;
   end if;
 
-  update public.orders set status = p_status, note = coalesce(p_note, note),
+  update public.orders set status = p_status, note = coalesce(p_note, note), stock_taken = take,
     updated_at = now(), updated_by = public.staff_email()
     where id = p_id returning * into o;
   return o;
