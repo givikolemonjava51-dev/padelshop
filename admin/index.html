@@ -81,6 +81,11 @@ select{width:auto}
 .side{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 .st{font-weight:700;border-radius:8px;padding:7px 10px}
 .st.new{border-color:var(--lime)}
+.items .have{font-size:12px;font-weight:700;margin-left:8px}
+.items .have.ok{color:var(--lime)}
+.items .have.no{color:var(--bad)}
+.confirm{grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.confirm small{color:var(--muted);font-size:13px}
 .note{grid-column:1/-1;display:flex;gap:8px}
 .note input{flex:1}
 .meta{grid-column:1/-1;color:var(--muted);font-size:12px}
@@ -183,7 +188,7 @@ let tt;function toast(t){const e=$("#toast");e.textContent=t;e.hidden=false;clea
 const STATUS=[["new","ახალი"],["confirmed","დადასტურებული"],["done","დასრულებული"],["cancelled","გაუქმებული"]];
 const STATUS_NAME=Object.fromEntries(STATUS);
 const CAT_NAME={racket:"ჩოგნები",ball:"ბურთები",bag:"ჩანთები"};
-const ERR={out_of_stock:"მარაგი არ კმარა ამ შეკვეთის აღსადგენად",not_staff:"წვდომა არ გაქვს",bad_status:"არასწორი სტატუსი",not_found:"შეკვეთა ვერ მოიძებნა"};
+const ERR={out_of_stock:"მარაგი არ კმარა ამ შეკვეთის დასადასტურებლად",not_staff:"წვდომა არ გაქვს",bad_status:"არასწორი სტატუსი",not_found:"შეკვეთა ვერ მოიძებნა"};
 const errText=e=>{const m=(e&&e.message)||"";return ERR[m]||Object.entries(ERR).find(([k])=>m.includes(k))?.[1]||"შეცდომა: "+m};
 
 const cfg=window.PB_CONFIG||{};
@@ -205,7 +210,7 @@ async function enter(session){
  if(error||!data.length){show("denied");return}
  show("app");
  await Promise.all([loadOrders(),loadStock()]);
- stop();timer=setInterval(()=>{if(!document.hidden)loadOrders(true)},30000);
+ stop();timer=setInterval(()=>{if(!document.hidden){loadOrders(true);loadStock(true)}},30000);
 }
 function stop(){clearInterval(timer);timer=null}
 
@@ -236,6 +241,10 @@ async function loadOrders(quiet){
  $("#stamp").textContent="განახლდა "+new Date().toLocaleTimeString("ka-GE",{hour:"2-digit",minute:"2-digit"});
  if(fresh)toast(`ახალი შეკვეთა: ${fresh}`);
 }
+// orders sent from the shop wait as "new" without taking stock until staff confirm them
+const waiting=o=>o.status==="new"&&o.stock_taken===false;
+const inStock=id=>products.find(p=>p.id===id)?.stock;
+const enough=o=>(o.items||[]).every(i=>(inStock(i.id)??0)>=i.qty);
 function renderOrders(){
  const counts=Object.fromEntries(STATUS.map(([k])=>[k,orders.filter(o=>o.status===k).length]));
  $("#newCount").textContent=counts.new;$("#newCount").hidden=!counts.new;
@@ -251,8 +260,9 @@ function renderOrders(){
    <div class="side">
     <select class="st ${o.status}" data-st="${o.id}" aria-label="სტატუსი">${STATUS.map(([k,n])=>`<option value="${k}"${o.status===k?" selected":""}>${n}</option>`).join("")}</select>
    </div>
-   <ul class="items">${(o.items||[]).map(i=>`<li><span>${esc(i.name)} × ${Number(i.qty)}</span><span class="num">${fmt(i.price*i.qty)}</span></li>`).join("")}
+   <ul class="items">${(o.items||[]).map(i=>`<li><span>${esc(i.name)} × ${Number(i.qty)}${waiting(o)&&products.length?`<span class="have ${(inStock(i.id)??0)>=i.qty?"ok":"no"}">მარაგში: ${inStock(i.id)??0}</span>`:""}</span><span class="num">${fmt(i.price*i.qty)}</span></li>`).join("")}
     <li class="tot"><span>სულ</span><span class="num">${fmt(o.total)}</span></li></ul>
+   ${o.status==="new"?`<div class="confirm"><button class="btn" data-confirm="${o.id}"${waiting(o)&&products.length&&!enough(o)?" disabled":""}>✓ დადასტურება</button><small>${!waiting(o)?"მარაგი უკვე დაკავებულია":!products.length?"":enough(o)?"მარაგში არის, დადასტურებისას მარაგს მოაკლდება":"მარაგში არ არის საკმარისი. დაუკავშირდი კლიენტს ან გააუქმე"}</small></div>`:""}
    <div class="note"><input type="text" data-note="${o.id}" value="${esc(o.note)}" placeholder="შენიშვნა (მაგ. დავურეკე, გადარიცხა)" maxlength="300"><button class="ghost" data-savenote="${o.id}">შენახვა</button></div>
    ${o.updated_by?`<div class="meta">ბოლოს შეცვალა ${esc(o.updated_by)}, ${when(o.updated_at)}</div>`:""}
   </article>`).join(""):`<div class="empty">${orders.length?"ამ ფილტრით შეკვეთა არ არის.":"შეკვეთები ჯერ არ არის."}</div>`;
@@ -263,31 +273,34 @@ $("#reload").addEventListener("click",()=>loadOrders());
 
 async function setStatus(id,status,note){
  const {data,error}=await sb.rpc("set_order_status",{p_id:id,p_status:status,p_note:note??null});
- if(error){toast(errText(error));renderOrders();return false}
- const was=orders.find(o=>o.id===id)?.status;
+ if(error){toast(errText(error));renderOrders();if(/out_of_stock/.test(error.message||""))loadStock();return false}
+ const was=orders.find(o=>o.id===id);
  orders=orders.map(o=>o.id===id?data:o);renderOrders();
- // cancelling or restoring an order moves stock
- if((was==="cancelled")!==(status==="cancelled"))loadStock();
+ // confirming takes stock, cancelling or moving back to "new" returns it
+ if(was&&was.stock_taken!==data.stock_taken)loadStock();
  return true;
 }
 $("#orders").addEventListener("change",async e=>{
  const s=e.target.closest("[data-st]");if(!s)return;
  const id=+s.dataset.st,o=orders.find(x=>x.id===id),to=s.value;
- if(to==="cancelled"&&!confirm(`გავაუქმო ${o.no}? პროდუქცია მარაგში დაბრუნდება.`)){s.value=o.status;return}
- if(await setStatus(id,to))toast(`${o.no}: ${STATUS_NAME[to]}`+(to==="cancelled"?", მარაგი დაბრუნდა":""));
+ if(to==="cancelled"&&!confirm(`გავაუქმო ${o.no}?`+(o.stock_taken!==false?" პროდუქცია მარაგში დაბრუნდება.":""))){s.value=o.status;return}
+ if(await setStatus(id,to))toast(`${o.no}: ${STATUS_NAME[to]}`+(to==="cancelled"&&o.stock_taken!==false?", მარაგი დაბრუნდა":""));
 });
 $("#orders").addEventListener("click",async e=>{
+ const c=e.target.closest("[data-confirm]");
+ if(c){const id=+c.dataset.confirm,o=orders.find(x=>x.id===id);c.disabled=true;
+  if(await setStatus(id,"confirmed"))toast(`${o.no} დადასტურდა. დაუკავშირდი კლიენტს`);return}
  const b=e.target.closest("[data-savenote]");if(!b)return;
  const id=+b.dataset.savenote,o=orders.find(x=>x.id===id),v=$(`[data-note="${id}"]`).value.trim();
  if(await setStatus(id,o.status,v))toast("შენიშვნა შენახულია");
 });
 
 /* ===== stock ===== */
-async function loadStock(){
+async function loadStock(quiet){
  const {data,error}=await sb.from("products").select("*").order("id");
- if(error){toast("მარაგი ვერ ჩაიტვირთა");return}
+ if(error){if(!quiet)toast("მარაგი ვერ ჩაიტვირთა");return}
  const ord=p=>["racket","ball","bag"].indexOf(p.cat)*1000+parseInt(p.id.slice(1))+(p.id.endsWith("x")?.5:0);
- products=data.sort((a,b)=>ord(a)-ord(b));renderStock();
+ products=data.sort((a,b)=>ord(a)-ord(b));renderStock();renderOrders();
 }
 function renderStock(){
  const cats=[...new Set(products.map(p=>p.cat))];
