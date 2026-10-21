@@ -953,8 +953,8 @@ $("#checkout").addEventListener("submit",async e=>{
   no=r.no;cart={};save();renderCart();renderGrid();
  }
  msg.innerHTML=bank
-  ?`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>შეკვეთა ${no}</b>მარაგს გადავამოწმებთ და მალე დაგიკავშირდებით დასადასტურებლად. დადასტურების შემდეგ გადმორიცხე <b style="display:inline;font-size:inherit">${tot}</b> ზემოთ მითითებულ ერთ-ერთ ანგარიშზე, დანიშნულებაში მიუთითე: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. თანხის მიღების შემდეგ ჩოგანს დღესვე გამოგიგზავნით.</div>`
-  :`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>ჯავშანი ${no}</b>მარაგს გადავამოწმებთ და მალე დაგიკავშირდებით დასადასტურებლად. დადასტურების შემდეგ შეკვეთა დაგხვდება Padelbade კრწანისში, შენს სახელზე. ჯავშანი აქტიურია 3 დღე. გადასახდელი: ${tot}. მობრძანდი 08:00 – 01:00.</div>`;
+  ?`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>შეკვეთა ${no}</b>გადმორიცხე <b style="display:inline;font-size:inherit">${tot}</b> ზემოთ მითითებულ ერთ-ერთ ანგარიშზე. დანიშნულებაში მიუთითე: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. თანხის მიღების შემდეგ დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით.</div>`
+  :`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>ჯავშანი ${no}</b>შეკვეთა დაგხვდება Padelbade კრწანისში, შენს სახელზე. ჯავშანი აქტიურია 3 დღე. გადასახდელი: ${tot}. მობრძანდი 08:00 – 01:00.</div>`;
  toast("შეკვეთა გაგზავნილია");
  msg.scrollIntoView({behavior:"smooth",block:"center"});
 });
