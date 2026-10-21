@@ -542,6 +542,7 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
 <div class="modal" id="modal" hidden><div class="mbox" id="mbox" role="dialog" aria-modal="true"></div></div>
 <div class="toast" id="toast" hidden></div>
 
+<script src="config.js"></script>
 <script>
 const CATS=[
   ["all","ყველა"],["racket","ჩოგნები"],["ball","ბურთები"],["bag","ჩანთები"]];
@@ -710,6 +711,25 @@ const save=()=>{try{localStorage.setItem("pb-cart",JSON.stringify(cart))}catch(e
 for(const id of Object.keys(cart)){const p=P.find(x=>x.id===id);if(!p||p.stock<=0)delete cart[id];else cart[id]=Math.min(cart[id],p.stock)}
 
 const $=s=>document.querySelector(s);
+
+/* live stock and orders: Supabase, set up in config.js. Without it the stock above is used and orders aren't saved. */
+const DB=(c=>c&&c.supabaseUrl&&c.supabaseAnonKey?c:null)(window.PB_CONFIG);
+async function db(path,body){
+ const r=await fetch(DB.supabaseUrl.replace(/\/$/,"")+"/rest/v1/"+path,{method:body?"POST":"GET",
+  headers:{apikey:DB.supabaseAnonKey,Authorization:"Bearer "+DB.supabaseAnonKey,"Content-Type":"application/json"},body:body&&JSON.stringify(body)});
+ if(!r.ok)throw new Error((await r.json().catch(()=>({}))).message||r.status);
+ return r.json();
+}
+function applyStock(map){
+ for(const p of P)if(map[p.id]!=null)p.stock=map[p.id];
+ for(const id of Object.keys(cart)){const p=byId(id);if(!p||p.stock<=0)delete cart[id];else cart[id]=Math.min(cart[id],p.stock)}
+ save();
+}
+async function loadStock(){
+ if(!DB)return;
+ try{applyStock(Object.fromEntries((await db("products?select=id,stock")).map(r=>[r.id,r.stock])));renderAll();renderCart()}
+ catch(e){}
+}
 
 function renderCats(){
  $("#cats").innerHTML=CATS.map(([k,n])=>{
@@ -907,24 +927,37 @@ document.querySelectorAll('input[name="pay"]').forEach(r=>r.addEventListener("ch
 document.addEventListener("click",e=>{const b=e.target.closest(".cpy");if(!b)return;const v=b.dataset.copy;const done=()=>{b.classList.add("ok");b.querySelector("span").textContent="კოპირდა";setTimeout(()=>{b.classList.remove("ok");b.querySelector("span").textContent="კოპირება"},1600)};
  const fb=()=>{const c=b.parentElement.querySelector("code");const r=document.createRange();r.selectNodeContents(c);const s=getSelection();s.removeAllRanges();s.addRange(r);toast("მონიშნულია, დააკოპირე Ctrl+C / ⌘C")};
  try{navigator.clipboard.writeText(v).then(done,fb)}catch(err){fb()}});
-$("#checkout").addEventListener("submit",e=>{
+$("#checkout").addEventListener("submit",async e=>{
  e.preventDefault();
  const msg=$("#formMsg"),bank=payMode()==="bank";
  if(!count()){msg.innerHTML=`<p class="note">კალათა ცარიელია. ჯერ დაამატე პროდუქტი.</p>`;return}
  if(!$("#cname").value.trim()||$("#cphone").value.replace(/\D/g,"").length<9){msg.innerHTML=`<p class="note" style="color:var(--sale)">შეიყვანე სახელი და ტელეფონის ნომერი (მინიმუმ 9 ციფრი).</p>`;return}
  if(bank&&$("#caddr").value.trim().length<5){msg.innerHTML=`<p class="note">მიუთითე მიწოდების მისამართი.</p>`;return}
- const no="PB-"+String(Date.now()).slice(-5);
+ let no="PB-"+String(Date.now()).slice(-5);const tot=$("#tot").textContent;
+ if(DB){
+  const btn=$("#coBtn");btn.disabled=true;msg.innerHTML=`<p class="note">იგზავნება…</p>`;
+  let r;
+  try{r=await db("rpc/place_order",{p_name:$("#cname").value.trim(),p_phone:$("#cphone").value.trim(),p_address:bank?$("#caddr").value.trim():null,p_pay:bank?"bank":"cash",p_items:Object.entries(cart).map(([id,qty])=>({id,qty}))})}
+  catch(err){r={ok:false,error:String(err.message||err)}}
+  finally{btn.disabled=false}
+  if(r.stock)applyStock(r.stock);
+  if(!r.ok){
+   msg.innerHTML=`<p class="note">${r.error==="out_of_stock"?"სამწუხაროდ, ზოგი პროდუქტი ამასობაში ამოიწურა. კალათა განვაახლეთ, გადახედე და სცადე ხელახლა.":"შეკვეთა ვერ გაიგზავნა. შეამოწმე ინტერნეტი და სცადე ხელახლა."}</p>`;
+   if(r.error==="out_of_stock")loadStock();
+   return}
+  no=r.no;cart={};save();renderCart();renderGrid();
+ }
  msg.innerHTML=bank
-  ?`<div class="ok"><b>შეკვეთა ${no}</b>გადმორიცხე <b style="display:inline;font-size:inherit">${$("#tot").textContent}</b> ზემოთ მითითებულ ერთ-ერთ ანგარიშზე. დანიშნულებაში მიუთითე: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. თანხის მიღების შემდეგ დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით.</div>`
-  :`<div class="ok"><b>ჯავშანი ${no}</b>შეკვეთა დაგხვდება Padelbade კრწანისში, შენს სახელზე. ჯავშანი აქტიურია 3 დღე. გადასახდელი: ${$("#tot").textContent}. მობრძანდი 08:00 – 01:00.</div>`;
+  ?`<div class="ok"><b>შეკვეთა ${no}</b>გადმორიცხე <b style="display:inline;font-size:inherit">${tot}</b> ზემოთ მითითებულ ერთ-ერთ ანგარიშზე. დანიშნულებაში მიუთითე: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. თანხის მიღების შემდეგ დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით.</div>`
+  :`<div class="ok"><b>ჯავშანი ${no}</b>შეკვეთა დაგხვდება Padelbade კრწანისში, შენს სახელზე. ჯავშანი აქტიურია 3 დღე. გადასახდელი: ${tot}. მობრძანდი 08:00 – 01:00.</div>`;
 });
 
 
 /* ===== racket assistant ===== */
-const CATALOG=P.map(p=>p.cat==="racket"
+const catalog=()=>P.map(p=>p.cat==="racket"
  ?{id:p.id,type:"racket",brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock,shape:p.shape,weight:p.weight,balance:p.balance,face:p.face,level:LEVEL_NAME[p.level],ratings_1_10:p.r?{power:p.r[0],control:p.r[1],comfort:p.r[2]}:null,note:p.desc}
  :{id:p.id,type:p.cat,brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock});
-const RULES=`You are the racket-fitting assistant of the Padelbade padel club online shop (Tbilisi, Georgia).
+const rules=()=>`You are the racket-fitting assistant of the Padelbade padel club online shop (Tbilisi, Georgia).
 Reply in the customer's language; default to Georgian. Be warm and short: at most about 80 words per reply, plain text, no headings, no tables.
 Goal: recommend the best padel racket from THIS catalog only.
 - If you do not yet know the player's level and playing style, ask first (at most 2 short questions per message). Also useful: budget, how often they play, elbow or shoulder pain.
@@ -936,7 +969,7 @@ Stock: in_stock is the number of units left. Never recommend an item with in_sto
 Buying options: (1) reserve online, pick up and pay at the Padelbade Krtsanisi branch (open daily 08:00-01:00); or (2) pay online by bank transfer (TBC or Bank of Georgia, recipient შპს პადელბადე რუსთავი, account numbers are shown in the cart), then the club contacts the customer and ships the racket. No pickup at other branches.
 Court bookings: point to padelbade.com. Off-topic questions: politely steer back to rackets.
 Catalog JSON:
-${JSON.stringify(CATALOG)}`;
+${JSON.stringify(catalog())}`;
 
 const bot=$("#bot"),fab=$("#botFab"),msgs=$("#msgs"),qr=$("#qr"),botIn=$("#botIn"),botSend=$("#botSend");
 let samplePromise=(window.claude&&typeof window.claude.use==="function")?window.claude.use("sample").catch(()=>null):Promise.resolve(null);
@@ -976,7 +1009,7 @@ async function sendAI(text){
  const s=sampleFn!==undefined?sampleFn:await samplePromise;
  if(!s){b.remove();setBusy(false);toQuiz("AI ჩატი ამ გვერდზე ახლა მიუწვდომელია, ამიტომ სამი მოკლე კითხვით შევარჩიოთ.");return}
  try{
-  const r=await s([{role:"user",content:RULES},...chat.slice(-12)],{cache:false,modelTier:"quick",signal:ctl.signal,
+  const r=await s([{role:"user",content:rules()},...chat.slice(-12)],{cache:false,modelTier:"quick",signal:ctl.signal,
    onText:({text})=>{b.classList.remove("wait");b.innerHTML=formatAI(text);scrollMsgs()}});
   b.classList.remove("wait");b.innerHTML=formatAI(r.text);chat.push({role:"assistant",content:r.text});
   if(r.truncated)bubble("ai err","პასუხი შეწყდა. დამიზუსტე კითხვა.");
@@ -1030,5 +1063,5 @@ $("#botForm").addEventListener("submit",e=>{
 });
 fab.onclick=openBot;$("#botClose").onclick=closeBot;
 
-renderAll();renderCart();
+renderAll();renderCart();loadStock();
 </script>
