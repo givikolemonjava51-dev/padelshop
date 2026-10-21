@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Padelbade · ადმინი</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap">
+<style>
+/* Staff dashboard: login → orders list with status changes, stock editor. Same palette as the shop. */
+:root{
+  --white:#FFFFFF;--lime:#C1D885;--court:#2B6651;--ink:#2A2A2A;--slate:#394150;
+  --bg:var(--ink);--surface:rgba(255,255,255,.05);--surface2:rgba(255,255,255,.09);
+  --line:rgba(255,255,255,.12);--fg:var(--white);--muted:rgba(230,231,235,.72);
+  --warn:#E8A33C;--bad:#E26D5A;
+  --font-display:"Montserrat","Noto Sans Georgian",system-ui,sans-serif;
+  --font-body:"Noto Sans Georgian","Montserrat",system-ui,sans-serif;
+  --r:12px;color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-display);margin:0;line-height:1.2}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+[hidden]{display:none!important}
+
+.top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:60px;flex-wrap:wrap}
+.brand{font-family:var(--font-display);font-weight:800;font-size:18px;display:flex;align-items:center;gap:8px}
+.brand span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;background:var(--lime);color:var(--ink);padding:2px 7px;border-radius:4px}
+.who{margin-left:auto;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;min-width:0}
+.who b{color:var(--fg);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+
+.btn{border:0;border-radius:8px;padding:10px 16px;font-weight:700;background:var(--lime);color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:default}
+.ghost{border:1px solid var(--line);background:none;color:var(--fg);border-radius:8px;padding:7px 12px;font-weight:600;font-size:13px}
+.ghost:hover{border-color:var(--lime)}
+
+.tabs{display:flex;gap:6px;padding:14px 0}
+.tab{border:1px solid var(--line);background:none;border-radius:999px;padding:8px 16px;font-weight:700;display:flex;gap:8px;align-items:center}
+.tab[aria-selected="true"]{background:var(--court);border-color:var(--court)}
+.pill{background:var(--lime);color:var(--ink);border-radius:999px;font-size:12px;min-width:22px;padding:0 7px;line-height:20px;text-align:center}
+
+input[type=text],input[type=email],input[type=password],input[type=search],select,textarea{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 12px;width:100%}
+select{width:auto}
+
+/* login */
+.login{max-width:380px;margin:12vh auto 0;padding:28px;border:1px solid var(--line);border-radius:16px;background:var(--surface);display:flex;flex-direction:column;gap:12px}
+.login p{margin:0;color:var(--muted);font-size:14px}
+.msg{font-size:14px;padding:10px 12px;border-radius:8px;background:var(--surface2)}
+.msg.err{color:#fff;background:rgba(226,109,90,.25)}
+
+/* toolbar */
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.bar input[type=search]{flex:1 1 220px;width:auto}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:none;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--lime);border-color:var(--lime);color:var(--ink)}
+.chip small{opacity:.7;margin-left:4px}
+.stamp{color:var(--muted);font-size:12px;margin-left:auto}
+
+/* orders */
+.orders{display:flex;flex-direction:column;gap:10px;padding-bottom:40px}
+.order{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:10px 16px}
+.order.new{border-color:var(--lime)}
+.order .h{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.order .no{font-family:var(--font-display);font-weight:800}
+.order .when{color:var(--muted);font-size:13px}
+.order .cust{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:14px}
+.order .cust a{color:var(--lime);text-decoration:none;font-weight:600}
+.tag{font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--surface2)}
+.tag.bank{background:rgba(193,216,133,.18);color:var(--lime)}
+.items{grid-column:1/-1;margin:0;padding:0;list-style:none;border-top:1px solid var(--line);padding-top:8px;font-size:14px}
+.items li{display:flex;justify-content:space-between;gap:12px;padding:2px 0}
+.items .tot{font-weight:700;border-top:1px dashed var(--line);margin-top:4px;padding-top:6px}
+.side{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.st{font-weight:700;border-radius:8px;padding:7px 10px}
+.st.new{border-color:var(--lime)}
+.note{grid-column:1/-1;display:flex;gap:8px}
+.note input{flex:1}
+.meta{grid-column:1/-1;color:var(--muted);font-size:12px}
+
+/* stock */
+.tbl{width:100%;border-collapse:collapse;margin-bottom:40px}
+.tbl th{text-align:left;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:8px;border-bottom:1px solid var(--line)}
+.tbl td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr.out td:first-child b{color:var(--bad)}
+.tbl tr.low td:first-child b{color:var(--warn)}
+.tbl .sub{color:var(--muted);font-size:12px}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.qty button{border:0;background:var(--surface);width:34px;height:36px;font-size:18px}
+.qty input{width:64px;border:0;border-radius:0;text-align:center;background:none;padding:6px}
+.saved{font-size:12px;color:var(--lime);margin-left:8px}
+.saved.err{color:var(--bad)}
+.empty{padding:40px 16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
+
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--white);color:var(--ink);padding:10px 16px;border-radius:10px;font-weight:600;z-index:20;max-width:calc(100% - 32px)}
+
+@media (max-width:640px){
+  .order{grid-template-columns:1fr}
+  .side{align-items:stretch;flex-direction:row;flex-wrap:wrap}
+  .tbl thead{display:none}
+  .tbl tr{display:grid;grid-template-columns:1fr auto;padding:8px 0;border-bottom:1px solid var(--line)}
+  .tbl td{border:0;padding:4px 0}
+  .tbl td.hide-sm{display:none}
+  .who b{max-width:120px}
+}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <div class="brand">Padelbade <span>ადმინი</span></div>
+  <div class="who" id="who" hidden><b id="whoEmail"></b><button class="ghost" id="logout">გასვლა</button></div>
+</div></header>
+
+<main class="wrap">
+  <div class="login" id="setup" hidden>
+    <h2>Supabase არ არის მიერთებული</h2>
+    <p>შეავსე <code>config.js</code> ფაილში <code>supabaseUrl</code> და <code>supabaseAnonKey</code>. ინსტრუქცია: <code>ADMIN.md</code>.</p>
+  </div>
+
+  <form class="login" id="loginForm" hidden>
+    <h2>შესვლა</h2>
+    <p>თანამშრომლის ელფოსტა და პაროლი</p>
+    <input type="email" id="email" placeholder="ელფოსტა" autocomplete="username" required>
+    <input type="password" id="pass" placeholder="პაროლი" autocomplete="current-password" required>
+    <div id="loginMsg"></div>
+    <button class="btn" id="loginBtn">შესვლა</button>
+  </form>
+
+  <div class="login" id="denied" hidden>
+    <h2>წვდომა არ გაქვს</h2>
+    <p>ეს ანგარიში თანამშრომლების სიაში არ არის. სთხოვე მფლობელს, დაგამატოს.</p>
+    <button class="ghost" id="logout2">სხვა ანგარიშით შესვლა</button>
+  </div>
+
+  <section id="app" hidden>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="orders" aria-selected="true">შეკვეთები <span class="pill num" id="newCount" hidden>0</span></button>
+      <button class="tab" role="tab" data-tab="stock" aria-selected="false">მარაგები</button>
+    </div>
+
+    <div id="tab-orders">
+      <div class="bar">
+        <input type="search" id="oq" placeholder="ძებნა: სახელი, ტელეფონი, ნომერი">
+        <button class="ghost" id="reload">განახლება</button>
+        <span class="stamp" id="stamp"></span>
+      </div>
+      <div class="bar"><div class="chips" id="ofilter"></div></div>
+      <div class="orders" id="orders"></div>
+    </div>
+
+    <div id="tab-stock" hidden>
+      <div class="bar">
+        <input type="search" id="sq" placeholder="ძებნა პროდუქტში">
+        <div class="chips" id="sfilter"></div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>პროდუქტი</th><th>ფასი</th><th>მარაგი</th><th class="hide-sm">ბოლო ცვლილება</th></tr></thead>
+        <tbody id="stock"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>n==null?"ფასი კლუბში":Number(n).toLocaleString("en-US").replace(/,/g," ")+" ₾";
+const when=t=>new Date(t).toLocaleString("ka-GE",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+let tt;function toast(t){const e=$("#toast");e.textContent=t;e.hidden=false;clearTimeout(tt);tt=setTimeout(()=>e.hidden=true,2400)}
+
+const STATUS=[["new","ახალი"],["confirmed","დადასტურებული"],["done","დასრულებული"],["cancelled","გაუქმებული"]];
+const STATUS_NAME=Object.fromEntries(STATUS);
+const CAT_NAME={racket:"ჩოგნები",ball:"ბურთები",bag:"ჩანთები"};
+const ERR={out_of_stock:"მარაგი არ კმარა ამ შეკვეთის აღსადგენად",not_staff:"წვდომა არ გაქვს",bad_status:"არასწორი სტატუსი",not_found:"შეკვეთა ვერ მოიძებნა"};
+const errText=e=>{const m=(e&&e.message)||"";return ERR[m]||Object.entries(ERR).find(([k])=>m.includes(k))?.[1]||"შეცდომა: "+m};
+
+const cfg=window.PB_CONFIG||{};
+let sb=null,orders=[],products=[],ofilter="new",sfilter="all",timer=null;
+
+function show(id){for(const s of ["setup","loginForm","denied","app"])$("#"+s).hidden=s!==id;$("#who").hidden=id!=="app"&&id!=="denied"}
+
+async function boot(){
+ if(!cfg.supabaseUrl||!cfg.supabaseAnonKey||!window.supabase){show("setup");return}
+ sb=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+ const {data:{session}}=await sb.auth.getSession();
+ session?enter(session):show("loginForm");
+ sb.auth.onAuthStateChange((ev,s)=>{if(ev==="SIGNED_OUT"){stop();show("loginForm")}});
+}
+
+async function enter(session){
+ $("#whoEmail").textContent=session.user.email;
+ const {data,error}=await sb.from("staff").select("email").limit(1);
+ if(error||!data.length){show("denied");return}
+ show("app");
+ await Promise.all([loadOrders(),loadStock()]);
+ stop();timer=setInterval(()=>{if(!document.hidden)loadOrders(true)},30000);
+}
+function stop(){clearInterval(timer);timer=null}
+
+$("#loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const b=$("#loginBtn");b.disabled=true;$("#loginMsg").innerHTML="";
+ const {data,error}=await sb.auth.signInWithPassword({email:$("#email").value.trim(),password:$("#pass").value});
+ b.disabled=false;
+ if(error){$("#loginMsg").innerHTML=`<div class="msg err">ელფოსტა ან პაროლი არასწორია</div>`;return}
+ $("#pass").value="";enter(data.session);
+});
+const logout=()=>sb.auth.signOut();
+$("#logout").addEventListener("click",logout);
+$("#logout2").addEventListener("click",logout);
+
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+ document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",x===t));
+ $("#tab-orders").hidden=t.dataset.tab!=="orders";$("#tab-stock").hidden=t.dataset.tab!=="stock";
+ if(t.dataset.tab==="stock")loadStock();
+}));
+
+/* ===== orders ===== */
+async function loadOrders(quiet){
+ const {data,error}=await sb.from("orders").select("*").order("created_at",{ascending:false}).limit(500);
+ if(error){if(!quiet)toast("შეკვეთები ვერ ჩაიტვირთა");return}
+ const before=new Set(orders.map(o=>o.id)),fresh=orders.length&&data.filter(o=>!before.has(o.id)).length;
+ orders=data;renderOrders();
+ $("#stamp").textContent="განახლდა "+new Date().toLocaleTimeString("ka-GE",{hour:"2-digit",minute:"2-digit"});
+ if(fresh)toast(`ახალი შეკვეთა: ${fresh}`);
+}
+function renderOrders(){
+ const counts=Object.fromEntries(STATUS.map(([k])=>[k,orders.filter(o=>o.status===k).length]));
+ $("#newCount").textContent=counts.new;$("#newCount").hidden=!counts.new;
+ $("#ofilter").innerHTML=[...STATUS,["all","ყველა"]].map(([k,n])=>`<button class="chip" data-of="${k}" aria-pressed="${ofilter===k}">${n}<small class="num">${k==="all"?orders.length:counts[k]}</small></button>`).join("");
+ const q=$("#oq").value.trim().toLowerCase(),qd=q.replace(/\D/g,"");
+ const list=orders.filter(o=>(ofilter==="all"||o.status===ofilter)&&(!q||o.name.toLowerCase().includes(q)||o.no.toLowerCase().includes(q)||(qd&&o.phone.replace(/\D/g,"").includes(qd))));
+ $("#orders").innerHTML=list.length?list.map(o=>`
+  <article class="order ${o.status==="new"?"new":""}" data-id="${o.id}">
+   <div>
+    <div class="h"><span class="no">${esc(o.no)}</span><span class="when">${when(o.created_at)}</span><span class="tag ${o.pay}">${o.pay==="bank"?"ონლაინ გადარიცხვა":"ადგილზე გადახდა"}</span></div>
+    <div class="cust"><b>${esc(o.name)}</b><a href="tel:${esc(o.phone.replace(/[^\d+]/g,""))}">${esc(o.phone)}</a>${o.address?`<span>${esc(o.address)}</span>`:""}</div>
+   </div>
+   <div class="side">
+    <select class="st ${o.status}" data-st="${o.id}" aria-label="სტატუსი">${STATUS.map(([k,n])=>`<option value="${k}"${o.status===k?" selected":""}>${n}</option>`).join("")}</select>
+   </div>
+   <ul class="items">${(o.items||[]).map(i=>`<li><span>${esc(i.name)} × ${Number(i.qty)}</span><span class="num">${fmt(i.price*i.qty)}</span></li>`).join("")}
+    <li class="tot"><span>სულ</span><span class="num">${fmt(o.total)}</span></li></ul>
+   <div class="note"><input type="text" data-note="${o.id}" value="${esc(o.note)}" placeholder="შენიშვნა (მაგ. დავურეკე, გადარიცხა)" maxlength="300"><button class="ghost" data-savenote="${o.id}">შენახვა</button></div>
+   ${o.updated_by?`<div class="meta">ბოლოს შეცვალა ${esc(o.updated_by)}, ${when(o.updated_at)}</div>`:""}
+  </article>`).join(""):`<div class="empty">${orders.length?"ამ ფილტრით შეკვეთა არ არის.":"შეკვეთები ჯერ არ არის."}</div>`;
+}
+$("#ofilter").addEventListener("click",e=>{const b=e.target.closest("[data-of]");if(!b)return;ofilter=b.dataset.of;renderOrders()});
+$("#oq").addEventListener("input",renderOrders);
+$("#reload").addEventListener("click",()=>loadOrders());
+
+async function setStatus(id,status,note){
+ const {data,error}=await sb.rpc("set_order_status",{p_id:id,p_status:status,p_note:note??null});
+ if(error){toast(errText(error));renderOrders();return false}
+ const was=orders.find(o=>o.id===id)?.status;
+ orders=orders.map(o=>o.id===id?data:o);renderOrders();
+ // cancelling or restoring an order moves stock
+ if((was==="cancelled")!==(status==="cancelled"))loadStock();
+ return true;
+}
+$("#orders").addEventListener("change",async e=>{
+ const s=e.target.closest("[data-st]");if(!s)return;
+ const id=+s.dataset.st,o=orders.find(x=>x.id===id),to=s.value;
+ if(to==="cancelled"&&!confirm(`გავაუქმო ${o.no}? პროდუქცია მარაგში დაბრუნდება.`)){s.value=o.status;return}
+ if(await setStatus(id,to))toast(`${o.no}: ${STATUS_NAME[to]}`+(to==="cancelled"?", მარაგი დაბრუნდა":""));
+});
+$("#orders").addEventListener("click",async e=>{
+ const b=e.target.closest("[data-savenote]");if(!b)return;
+ const id=+b.dataset.savenote,o=orders.find(x=>x.id===id),v=$(`[data-note="${id}"]`).value.trim();
+ if(await setStatus(id,o.status,v))toast("შენიშვნა შენახულია");
+});
+
+/* ===== stock ===== */
+async function loadStock(){
+ const {data,error}=await sb.from("products").select("*").order("id");
+ if(error){toast("მარაგი ვერ ჩაიტვირთა");return}
+ const ord=p=>["racket","ball","bag"].indexOf(p.cat)*1000+parseInt(p.id.slice(1))+(p.id.endsWith("x")?.5:0);
+ products=data.sort((a,b)=>ord(a)-ord(b));renderStock();
+}
+function renderStock(){
+ const cats=[...new Set(products.map(p=>p.cat))];
+ $("#sfilter").innerHTML=[["all","ყველა"],...cats.map(c=>[c,CAT_NAME[c]||c])].map(([k,n])=>`<button class="chip" data-sf="${k}" aria-pressed="${sfilter===k}">${n}</button>`).join("")
+  +`<button class="chip" data-sf="low" aria-pressed="${sfilter==="low"}">ცოტა / ამოწურული</button>`;
+ const q=$("#sq").value.trim().toLowerCase();
+ const list=products.filter(p=>(sfilter==="all"||p.cat===sfilter||(sfilter==="low"&&p.stock<=3))&&(!q||p.name.toLowerCase().includes(q)||p.id===q));
+ $("#stock").innerHTML=list.length?list.map(p=>`
+  <tr class="${p.stock<=0?"out":p.stock<=3?"low":""}" data-pid="${esc(p.id)}">
+   <td><b>${esc(p.name)}</b><div class="sub">${esc(p.id)} · ${esc(CAT_NAME[p.cat]||p.cat)}</div></td>
+   <td class="num">${fmt(p.price)}</td>
+   <td><span class="qty"><button data-d="-1" aria-label="შემცირება">−</button><input class="num" type="text" inputmode="numeric" value="${p.stock}" data-stock="${esc(p.id)}" aria-label="მარაგი"><button data-d="1" aria-label="გაზრდა">+</button></span><span class="saved" data-saved="${esc(p.id)}"></span></td>
+   <td class="sub hide-sm">${p.updated_by?esc(p.updated_by==="order"?"შეკვეთა":p.updated_by)+"<br>":""}${when(p.updated_at)}</td>
+  </tr>`).join(""):`<tr><td colspan="4"><div class="empty">პროდუქტი ვერ მოიძებნა.</div></td></tr>`;
+}
+$("#sfilter").addEventListener("click",e=>{const b=e.target.closest("[data-sf]");if(!b)return;sfilter=b.dataset.sf;renderStock()});
+$("#sq").addEventListener("input",renderStock);
+
+const pending={};
+function queueSave(id,val){
+ clearTimeout(pending[id]);
+ const mark=$(`[data-saved="${CSS.escape(id)}"]`);if(mark){mark.className="saved";mark.textContent="…"}
+ pending[id]=setTimeout(()=>saveStock(id,val),600);
+}
+async function saveStock(id,val){
+ const mark=$(`[data-saved="${CSS.escape(id)}"]`);
+ const {data,error}=await sb.from("products").update({stock:val}).eq("id",id).select().single();
+ if(error){if(mark){mark.className="saved err";mark.textContent="ვერ შეინახა"}toast("მარაგი ვერ შეინახა");return}
+ products=products.map(p=>p.id===id?data:p);
+ const row=$(`tr[data-pid="${CSS.escape(id)}"]`);
+ if(row){row.className=data.stock<=0?"out":data.stock<=3?"low":"";row.lastElementChild.innerHTML=esc(data.updated_by||"")+"<br>"+when(data.updated_at)}
+ if(mark){mark.className="saved";mark.textContent="✓ შენახულია";setTimeout(()=>{if(mark.textContent.startsWith("✓"))mark.textContent=""},1800)}
+}
+$("#stock").addEventListener("click",e=>{
+ const b=e.target.closest("[data-d]");if(!b)return;
+ const inp=b.parentElement.querySelector("input"),v=Math.max(0,(parseInt(inp.value)||0)+ +b.dataset.d);
+ inp.value=v;queueSave(inp.dataset.stock,v);
+});
+$("#stock").addEventListener("input",e=>{
+ const inp=e.target.closest("[data-stock]");if(!inp)return;
+ inp.value=inp.value.replace(/\D/g,"").slice(0,5);
+ if(inp.value!=="")queueSave(inp.dataset.stock,parseInt(inp.value));
+});
+$("#stock").addEventListener("focusout",e=>{const inp=e.target.closest("[data-stock]");if(inp&&inp.value==="")inp.value="0",queueSave(inp.dataset.stock,0)});
+
+boot();
+</script>
+</body>
+</html>
