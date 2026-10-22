@@ -487,9 +487,7 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
       <div class="kr">
         <div class="club"><h3 data-en="Padelbade Krtsanisi">Padelbade კრწანისი</h3><p data-en="5 indoor premium courts.">5 დახურული პრემიუმ კორტი.</p><p data-en="Daily 08:00 – 01:00">ყოველდღე 08:00 – 01:00</p><p data-en="Pay on site when you pick up.">გადახდა ადგილზე, პროდუქტის აღებისას.</p><a href="https://padelbade.com/" target="_blank" rel="noopener" data-en="Go to padelbade.com →">გადამისამართება padelbade.com-ზე →</a></div>
         <div class="howbox">
-          <div class="how"><h3 data-en="Pay on site <i>Krtsanisi</i>">ადგილზე გადახდა <i>კრწანისი</i></h3><ol><li data-en="Add a racket to the cart and choose &quot;Pay on site&quot;.">დაამატე ჩოგანი კალათაში და აირჩიე „ადგილზე გადახდა“.</li><li data-en="Your order will be waiting at Padelbade Krtsanisi.">შეკვეთა დაგხვდება პადელბადე კრწანისში</li><li data-en="Come by 08:00 – 01:00, pay and take your racket.">მოდი 08:00 – 01:00, გადაიხადე და წაიღე ჩოგანი.</li></ol></div>
-          <div class="how"><h3 data-en="Bank transfer <i>Delivery</i>">ონლაინ გადარიცხვა <i>მიწოდება</i></h3><ol><li data-en="Choose &quot;Bank transfer&quot; and enter your address.">აირჩიე „ონლაინ გადარიცხვა“ და მიუთითე მისამართი.</li><li data-en="Transfer the amount to one of the accounts, with your order number as the payment reference.">გადმორიცხე თანხა ერთ-ერთ ანგარიშზე, დანიშნულებაში შეკვეთის ნომრით.</li><li data-en="The club will contact you and send your racket by courier. Please note that you pay the delivery fee.">კლუბიდან დაგიკავშირდებით და ჩოგანს საკურიერო მომსახურებით გამოგიგზავნით. გაითვალისწინე, მიწოდების საფასურს თავად იხდი.</li></ol>
-            <div class="accts"><div><b>TBC</b> · <code>GE27TB7579636080100019</code></div><div><b>Bank of Georgia</b> · <code>GE79BG0000000603557250</code></div><div><span data-en="Recipient:">მიმღები:</span> <b>შპს პადელბადე რუსთავი</b></div></div></div>
+          <div class="how"><h3 data-en="Racket reservation <i>Krtsanisi</i>">ჩოგნის დაჯავშნა <i>კრწანისი</i></h3><ol><li data-en="Add a racket to the cart and choose &quot;Racket reservation&quot;.">დაამატე ჩოგანი კალათაში და აირჩიე „ჩოგნის დაჯავშნა“.</li><li data-en="Your order will be waiting at Padelbade Krtsanisi.">შეკვეთა დაგხვდება პადელბადე კრწანისში</li><li data-en="Come by 08:00 – 01:00, pay and take your racket.">მოდი 08:00 – 01:00, გადაიხადე და წაიღე ჩოგანი.</li></ol></div>
         </div>
       </div>
     </div>
@@ -528,8 +526,7 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
   <form class="dfoot" id="checkout" novalidate>
     <fieldset class="paym">
       <legend data-en="How would you like to buy?">როგორ გსურს შეძენა?</legend>
-      <label class="pm"><input type="radio" name="pay" id="pay-cash" value="cash" checked><span><b data-en="Pay on site">ადგილზე გადახდა</b><small data-en="Reserve the racket and pay at the club">დაჯავშნე ჩოგანი და გადაიხადე ადგილზე</small></span></label>
-      <label class="pm"><input type="radio" name="pay" id="pay-bank" value="bank"><span><b data-en="Bank transfer">ონლაინ გადარიცხვა</b><small data-en="Transfer the amount, we'll contact you and ship the racket the same day">გადმორიცხე თანხა, დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით</small></span></label>
+      <label class="pm"><input type="radio" name="pay" id="pay-cash" value="cash" checked><span><b data-en="Racket reservation">ჩოგნის დაჯავშნა</b><small data-en="We'll contact you with more information">დამატებითი ინფორმაციის მისაღებად დაგიკავშირდებით</small></span></label>
     </fieldset>
     <div class="bankbox" id="bankBox" hidden>
       <div class="acct"><span class="bk tbc">TBC</span><code class="iban num">GE27TB7579636080100019</code><button type="button" class="cpy" data-copy="GE27TB7579636080100019" aria-label="TBC ანგარიშის კოპირება" data-en-label="Copy TBC account"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span data-en="Copy">კოპირება</span></button></div>
@@ -1002,8 +999,8 @@ $("#checkout").addEventListener("submit",async e=>{
  msg.innerHTML=bank
   ?T(`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>შეკვეთა ${no}</b>გადმორიცხე <b style="display:inline;font-size:inherit">${tot}</b> ზემოთ მითითებულ ერთ-ერთ ანგარიშზე. დანიშნულებაში მიუთითე: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. თანხის მიღების შემდეგ დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით.</div>`,
      `<div class="ok" role="status"><b class="okh">✓ Order sent</b><b>Order ${no}</b>Transfer <b style="display:inline;font-size:inherit">${tot}</b> to one of the accounts above. Payment reference: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. Once we receive the payment we'll contact you and ship the racket the same day.</div>`)
-  :T(`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>ჯავშანი ${no}</b>შეკვეთა დაგხვდება Padelbade კრწანისში, შენს სახელზე. ჯავშანი აქტიურია 3 დღე. გადასახდელი: ${tot}. მობრძანდი 08:00 – 01:00.</div>`,
-     `<div class="ok" role="status"><b class="okh">✓ Order sent</b><b>Reservation ${no}</b>Your order will be waiting at Padelbade Krtsanisi under your name. The reservation is held for 3 days. To pay: ${tot}. Come by 08:00 – 01:00.</div>`);
+  :T(`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>ჯავშანი ${no}</b>რეზერვი აქტიურია 24 საათი.<br>შეგიძლია მობრძანდე Padelbade Krtsanisi-ში ან ისარგებლო მიტანის სერვისით დღესვე, რომლის ღირებულებაც თბილისის მასშტაბით 10 ლარია.</div>`,
+     `<div class="ok" role="status"><b class="okh">✓ Order sent</b><b>Reservation ${no}</b>The reservation is active for 24 hours.<br>You can come to Padelbade Krtsanisi or use our same-day delivery service, which costs 10 ₾ anywhere in Tbilisi.</div>`);
  toast(T("შეკვეთა გაგზავნილია","Order sent"));
  msg.scrollIntoView({behavior:"smooth",block:"center"});
 });
@@ -1022,7 +1019,7 @@ Goal: recommend the best padel racket from THIS catalog only.
 Fitting knowledge: round shape + low balance + soft EVA = control, big sweet spot, best for beginners, easier on the elbow. Teardrop = balance of control and power, intermediate. Diamond + high balance + hard EVA = maximum power, advanced players, harder on the elbow. Lighter rackets suit beginners and players with arm pain.
 You may briefly suggest one useful extra (balls or a bag) the same way with [[id]], only when it fits.
 Stock: in_stock is the number of units left. Never recommend an item with in_stock 0; if a racket is low (1-3), you may mention that only a few are left.
-Buying options: (1) reserve online, pick up and pay at the Padelbade Krtsanisi branch (open daily 08:00-01:00); or (2) pay online by bank transfer (TBC or Bank of Georgia, recipient შპს პადელბადე რუსთავი, account numbers are shown in the cart), then the club contacts the customer and ships the racket. No pickup at other branches.
+Buying: the only checkout option is "racket reservation" (ჩოგნის დაჯავშნა): the customer reserves online, the club contacts them with more information, The reservation is active for 24 hours. The customer can pick up at the Padelbade Krtsanisi branch (open daily 08:00-01:00) or use same-day delivery, which costs 10 GEL anywhere in Tbilisi. No online payment. No pickup at other branches.
 Court bookings: point to padelbade.com. Off-topic questions: politely steer back to rackets.
 Catalog JSON:
 ${JSON.stringify(catalog())}`;
