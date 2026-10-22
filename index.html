@@ -54,17 +54,24 @@ button{cursor:pointer}
 .nav a:hover{color:var(--fg)}
 .cart-btn{display:flex;align-items:center;gap:8px;border:0;background:var(--lime);color:var(--lime-ink);font-weight:700;padding:9px 14px;border-radius:8px}
 .cart-btn .count{background:var(--ink);color:#fff;min-width:22px;height:22px;border-radius:11px;display:grid;place-items:center;font-size:12px;padding:0 6px}
+.langsw{display:flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:8px;background:var(--surface);flex:none}
+.langsw button{border:0;background:none;color:var(--muted);font-family:"Montserrat","Noto Sans Georgian",sans-serif;font-weight:700;font-size:12px;padding:5px 8px;border-radius:6px;line-height:1}
+.langsw button[aria-pressed="true"]{background:var(--lime);color:var(--lime-ink)}
 .menu-btn{display:none;border:1px solid var(--line);background:var(--surface);color:var(--fg);width:40px;height:40px;border-radius:8px;place-items:center;padding:0;flex:none}
 @media (max-width:760px){
 .top .wrap{gap:10px;height:58px}
 .menu-btn{display:grid;order:3}
-.cart-btn{margin-left:auto;order:2}
+.langsw{margin-left:auto;order:1}
+.cart-btn{order:2}
 .nav{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;margin:0;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:var(--shadow);padding:6px max(16px,env(safe-area-inset-left,0px))}
 .nav.open{display:flex}
 .nav a{padding:13px 2px;font-size:16px;border-bottom:1px solid var(--line)}
 .nav a:last-child{border-bottom:0}
 }
-@media (max-width:420px){.brand img{height:28px}.brand b{font-size:15px}.brand span{font-size:10px;padding:2px 5px}.cart-btn{padding:8px 11px}.cart-btn .lbl{display:none}}
+@media (max-width:420px){.brand img{height:28px}.brand b{font-size:15px}.brand span{font-size:10px;padding:2px 5px}.cart-btn{padding:8px 11px}.cart-btn .lbl{display:none}.top .wrap{gap:8px}
+/* phones: the switch shows only the language you can switch to */
+.langsw{padding:0;border:0;background:none}.langsw button[aria-pressed="true"]{display:none}.langsw button{height:40px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}}
+@media (max-width:380px){.brand span{display:none}}
 
 /* demo strip */
 .demo{background:var(--surface);color:var(--muted);font-size:13px}
@@ -400,18 +407,19 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
       <img alt="Padelbade" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEIAAABgCAYAAACpMKTVAAAIIElEQVR4AeyceWxUVRTG37wpVVHcEjHiVkwp3QArbsWNqFGjJppogltMmxg3CGCMQvzDBDdiMIiCCxpDRURigkZiohLEChFFxQClA9UCk1AgFlELlcIw7fj7pndqZ3kDGUBeO7c5p+fcc+8979zvnvtm3pv7njt27NiCsrKyp8vLy2P9nP8uLS0tGjFixBmO4wSclD+3tbV1ciAQeDnF3h+Lp7muu7Wzs3NBRUXFQ6kDdDHMgPOJbo3FYu+Q/bN6D1pA9C7nkz6hNxgCoiWfRt9rrEH0SSyTx5GuG4lELkH5Ds5LYpncW1JScqbb3Ny8i0ItKHgxVVnJq59f7F9ljd5xrubDYpCWhrNx48bfQqFQXSbO4uTRrq6uoZn6+MlG/PfxSXER0pOCweCKOBCeLbwrXmKwczdt2hT2buKPGuL8s6mpaSuDPZOIYnAmOi8XIHaRSr9k8uZnW2Fh4QHiXuoVYy5AbG5sbFzs5dCv9jVr1uwjtnfhjJQLEBkd9XWjBcLMoAXCAmEQMOK4ZYQ5vm+EBcJMhQXCAmEQMMJmhAXCIGCEzQgLhEHACJsRFgiDgBE2IywQBgEjbEZYIAwCRtiMyFsgzMBThc0Ig0guQJxg9hgYF31GuPyid5ZXtLkAUcUvR++XlZWd4+XUj3Z++b6LuN6CM1IuQMjR7fxYMg8lbecJNt8RIEwjqDdgT8oVCAFwMwfYAi/y9H6cK4jtengrYUyFPZcFdU4SEJWVlefTMdab1SgLF1E3rnd7P+nE9jWsGAuRWSkJCH7dXp21dT+uTAKiH4/zkEOzQBiILBAeQHxs7HknkjIiFApNBoHUvU+YslJqe7+VvyB6r50yVHVTEhAyAUbSXirZPPgBPmV8v4cqGAzeT5xZ91BpfGlAyHgI7uI7+/MA9mFf2EPV0NDwl+Lcv3//6YzrDzgj5QLEdlBentGbj41btmzZQ2ZM9AoxJyA2bNhQ7+Uwze4fQ4wJjHiFkwsQXr76tN0CYabPAmGBMAgYYTPCAmEQMMJmhAXCIGCEzQgLhEHACJsRFgiDgBE2IywQBgEj+nFGmBEeprBAGKAsEBYIg4ARNiMsEAYBI2xGHAEQdg+VAa+K3wfm97U9VBUVFY8S/9HdQ8UvXbfjtA7WFiKEv6m8vHwaMR+TPVROIBC4iQNoD5V4gt+gKCoqOpEs2EiMiT1U2UK81h09evRA0nwOHZL2TiXK2XpTp/1JQ5GzE+39IgcOHNhBFpQSm2LMtodqt+u6Ybejo+NxZnc8HfKSAGsKP2Fu08dnvr2HqveEf09hBZy8vVCGPOLWSCRyh96vozFrf/J6KXnEuxlrOBQKna03LqHHyT148OCNaB/AR/jiHDz4m/RxLx4HCDrBJ0Ubfw8VFTWcOf229+moxsMYaw1rN24SCCroZCnZxZmznoZJ+6f6U1mDzMYJILK1yYs6C4SZZguEBcIgYITNiP8DCC7AaiorK3WV6nnRQ5tiuEY8fPjwQcj74RpdPZoYcxLyAd9wuJ2PdUbM4ybOU8Fg8GSvgLjgu4o6PR82r7CwUI8bvalyQUHBIOSR0Dx8Tz5cB4cEQo82jhw58rxUh8OGDePqPf1JP80kFRcWFxefkNpHZWZ9iOqlH4pLSkpKq6urT0ptx0xfgS0tdo55allZeky0FQVGjRp1LmMZrEIqpzlTA25ojOdg8fsTnZ2d4Wg0uo1yl7l3cSV654ABA5aD+A50tXtW/dCv0H0A7CFmt122BAsA6rX79VfqG6QTVBrAifb0byUrVre1te2j7cPYXQa5CF1vIVyMjMJrqqqqlEUOeow+bfjWjaIo7XuIus/gKJcTqxhLM3qMJXt+TwOUjEBgjxPX6h+hPAb/BAe4d/EAaa5Xw77NAWuw/QD3JpW383X9GYyvwz1Evy8pdMHL8Ps5kpiiq5AZCf+LaPcIlT/Cc5ntUyjrab0XqBuHrkvoSw4cOKC3Gd9CG9FO/j1H/WxknJjUy1AuhnWjZhJyCRxlySY9v5YVCGZkPF+zF9Ix8UjjXHSRgpqC0tO/iFtjlEUNfF1/jX5PqpCBLyfQsRnsSSYGOJFLZIGh48frAPgJlJGAMB0fBehxQlcs0hs57vTGxka1U9mh7T0oF8An0U7nn+vR06hnIGk1GFgWa6ur42t0CEUHFC+FV+LwQcrvoY9DxikcDic2fF9H6j0MZ7zhQ99v6TeGTi0ALYmaTiy9G1hOw2kfX3amxXjKY+AZ+Og5NvoyU6/xBDn2J6YsIF4BjCbKe2k3Rsy4SgBV5xnM3aSO3ZrHf61RqrS9f0d7e3vI6HuQC3D2DTJBSvswQe7FoMwRWKjdhF2fDNsJ6h766YbqKayNBd216f9pP4fltIkazXyY9S//v9N/CLwEH4knBPTy4hdpp9sI1wCCzg9XUo4TWbUTX5sptNFnqxi/K8nabdh6KCsQdLiYlnUceCZIXtXS0tJBWWtM5w1dqerJGF3jr8XukJZDOeht6LLdLEnfpdgipOurzESFbGJsd9JeS6RZZTHnIIGopVBHwHfLBj9GOz0p1E6WXE5Z6V03ePDgYnTFljj2RficKRt9r5Ek5vglN/1vI/vKZRMTh/yg/kdZgVAznNSC6lQ9BWPKEWwLYd0viEnCAkfVDkj/TFnX/msl6Ttj/fr1/6iyqalpr2xigIm/lFxSZbHuGCE18Fr81KPLj4BRd2fdunXbsU2Ea+vr66OS+P80Xuk4MXxNlY2+myWpm2XqHMUgm5g4diTsCZkRCFJ2PmgObWhoaEs07O/yXwAAAP//2q33QwAAAAZJREFUAwCtf8IomreY7QAAAABJRU5ErkJggg==">
       <b>padelbade</b><span>shop</span>
     </a>
-    <button class="menu-btn" id="menuBtn" aria-label="მენიუ" aria-expanded="false" aria-controls="mainNav">
+    <button class="menu-btn" id="menuBtn" aria-label="მენიუ" data-en-label="Menu" aria-expanded="false" aria-controls="mainNav">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
     <nav class="nav" id="mainNav">
-      <a href="#shop">მაღაზია</a>
-      <a href="#guide">ჩოგნის შერჩევა</a>
-      <a href="#pickup">აღება კრწანისში</a>
-      <a href="https://padelbade.com/" target="_blank" rel="noopener">კორტის დაჯავშნა</a>
+      <a href="#shop" data-en="Shop">მაღაზია</a>
+      <a href="#guide" data-en="Racket guide">ჩოგნის შერჩევა</a>
+      <a href="#pickup" data-en="Pickup in Krtsanisi">აღება კრწანისში</a>
+      <a href="https://padelbade.com/" target="_blank" rel="noopener" data-en="Book a court">კორტის დაჯავშნა</a>
     </nav>
-    <button class="cart-btn" id="openCart" aria-label="კალათის გახსნა">
+    <div class="langsw" role="group" aria-label="ენა / Language"><button type="button" data-lang="ka" lang="ka" aria-pressed="true">ქარ</button><button type="button" data-lang="en" lang="en" aria-pressed="false">EN</button></div>
+    <button class="cart-btn" id="openCart" aria-label="კალათის გახსნა" data-en-label="Open cart">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
-      <span class="lbl">კალათა</span> <span class="count num" id="cartCount">0</span>
+      <span class="lbl" data-en="Cart">კალათა</span> <span class="count num" id="cartCount">0</span>
     </button>
   </div>
 </header>
@@ -430,15 +438,15 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
   <div class="wrap">
     <div>
       <div class="eyebrow">PADELBADE SHOP</div>
-      <h1><em>TOP</em> ბრენდების ჩოგნები</h1>
-      <p>დაათვალიერე და დაჯავშნე ჩოგანი ონლაინ.</p>
+      <h1 data-en="Rackets from <em>TOP</em> brands"><em>TOP</em> ბრენდების ჩოგნები</h1>
+      <p data-en="Browse and reserve your racket online.">დაათვალიერე და დაჯავშნე ჩოგანი ონლაინ.</p>
       <div class="ctas">
-        <a class="btn btn-green" href="#shop">პროდუქციის ნახვა</a>
-        <button class="btn btn-ghost" data-bot="1">რომელი ჩოგანი შემეფერება? ჰკითხე AI-ს</button>
+        <a class="btn btn-green" href="#shop" data-en="View products">პროდუქციის ნახვა</a>
+        <button class="btn btn-ghost" data-bot="1" data-en="Which racket suits me? Ask the AI">რომელი ჩოგანი შემეფერება? ჰკითხე AI-ს</button>
       </div>
       <div class="facts">
         <div class="fact"><span class="fi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><b>padelbade Krtsanisi</b><small>Giorgi Guramishvili Str #7</small></div></div>
-        <div class="fact"><span class="fi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><div><b class="num">300–1 200 ₾</b><small>ჩოგნები ყველა დონისთვის</small></div></div>
+        <div class="fact"><span class="fi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></span><div><b class="num">300–1 200 ₾</b><small data-en="Rackets for every level">ჩოგნები ყველა დონისთვის</small></div></div>
       </div>
     </div>
   </div>
@@ -448,18 +456,18 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
   <section class="section" id="shop">
     <div class="wrap">
       <div class="sec-head">
-        <div><div class="eyebrow">მაღაზია</div><h2 id="shopTitle">ყველა პროდუქტი</h2></div>
+        <div><div class="eyebrow" data-en="Shop">მაღაზია</div><h2 id="shopTitle">ყველა პროდუქტი</h2></div>
       </div>
-      <div class="cats" id="cats" role="toolbar" aria-label="კატეგორიები"></div>
+      <div class="cats" id="cats" role="toolbar" aria-label="კატეგორიები" data-en-label="Categories"></div>
       <div class="tools">
         <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input id="q" type="search" placeholder="მოძებნე ბრენდი ან მოდელი" aria-label="ძებნა"></label>
-        <select id="sort" aria-label="დალაგება">
-          <option value="pop">პოპულარული</option>
-          <option value="asc">ფასი: იაფიდან</option>
-          <option value="desc">ფასი: ძვირიდან</option>
+          <input id="q" type="search" placeholder="მოძებნე ბრენდი ან მოდელი" data-en-ph="Search brand or model" aria-label="ძებნა" data-en-label="Search"></label>
+        <select id="sort" aria-label="დალაგება" data-en-label="Sort">
+          <option value="pop" data-en="Popular">პოპულარული</option>
+          <option value="asc" data-en="Price: low to high">ფასი: იაფიდან</option>
+          <option value="desc" data-en="Price: high to low">ფასი: ძვირიდან</option>
         </select>
-        <label class="toggle"><input type="checkbox" id="instock"> მხოლოდ მარაგში</label>
+        <label class="toggle"><input type="checkbox" id="instock"> <span data-en="In stock only">მხოლოდ მარაგში</span></label>
       </div>
       <div class="subfilters" id="sub" hidden></div>
       <div class="grid" id="grid"></div>
@@ -468,20 +476,20 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
 
   <section class="section guide" id="guide">
     <div class="wrap">
-      <div class="sec-head"><div><div class="eyebrow">ჩოგნის შერჩევა</div><h2>ფორმა განსაზღვრავს თამაშის სტილს</h2></div><button class="btn btn-lime" data-bot="1">ვერ გადაწყვიტე? ჰკითხე ასისტენტს</button></div>
+      <div class="sec-head"><div><div class="eyebrow" data-en="Racket guide">ჩოგნის შერჩევა</div><h2 data-en="Shape defines your playing style">ფორმა განსაზღვრავს თამაშის სტილს</h2></div><button class="btn btn-lime" data-bot="1" data-en="Can't decide? Ask the assistant">ვერ გადაწყვიტე? ჰკითხე ასისტენტს</button></div>
       <div class="shapes" id="shapes"></div>
     </div>
   </section>
 
   <section class="section" id="pickup">
     <div class="wrap">
-      <div class="sec-head"><div><div class="eyebrow">აღება და გადახდა</div><h2>აირჩიე, როგორ შეიძინო</h2></div></div>
+      <div class="sec-head"><div><div class="eyebrow" data-en="Pickup and payment">აღება და გადახდა</div><h2 data-en="Choose how to buy">აირჩიე, როგორ შეიძინო</h2></div></div>
       <div class="kr">
-        <div class="club"><h3>Padelbade კრწანისი</h3><p>5 დახურული პრემიუმ კორტი.</p><p>ყოველდღე 08:00 – 01:00</p><p>გადახდა ადგილზე, პროდუქტის აღებისას.</p><a href="https://padelbade.com/" target="_blank" rel="noopener">გადამისამართება padelbade.com-ზე →</a></div>
+        <div class="club"><h3 data-en="Padelbade Krtsanisi">Padelbade კრწანისი</h3><p data-en="5 indoor premium courts.">5 დახურული პრემიუმ კორტი.</p><p data-en="Daily 08:00 – 01:00">ყოველდღე 08:00 – 01:00</p><p data-en="Pay on site when you pick up.">გადახდა ადგილზე, პროდუქტის აღებისას.</p><a href="https://padelbade.com/" target="_blank" rel="noopener" data-en="Go to padelbade.com →">გადამისამართება padelbade.com-ზე →</a></div>
         <div class="howbox">
-          <div class="how"><h3>ადგილზე გადახდა <i>კრწანისი</i></h3><ol><li>დაამატე ჩოგანი კალათაში და აირჩიე „ადგილზე გადახდა“.</li><li>შეკვეთა დაგხვდება პადელბადე კრწანისში</li><li>მოდი 08:00 – 01:00, გადაიხადე და წაიღე ჩოგანი.</li></ol></div>
-          <div class="how"><h3>ონლაინ გადარიცხვა <i>მიწოდება</i></h3><ol><li>აირჩიე „ონლაინ გადარიცხვა“ და მიუთითე მისამართი.</li><li>გადმორიცხე თანხა ერთ-ერთ ანგარიშზე, დანიშნულებაში შეკვეთის ნომრით.</li><li>კლუბიდან დაგიკავშირდებით და ჩოგანს საკურიერო მომსახურებით გამოგიგზავნით. გაითვალისწინე, მიწოდების საფასურს თავად იხდი.</li></ol>
-            <div class="accts"><div><b>TBC</b> · <code>GE27TB7579636080100019</code></div><div><b>Bank of Georgia</b> · <code>GE79BG0000000603557250</code></div><div>მიმღები: <b>შპს პადელბადე რუსთავი</b></div></div></div>
+          <div class="how"><h3 data-en="Pay on site <i>Krtsanisi</i>">ადგილზე გადახდა <i>კრწანისი</i></h3><ol><li data-en="Add a racket to the cart and choose &quot;Pay on site&quot;.">დაამატე ჩოგანი კალათაში და აირჩიე „ადგილზე გადახდა“.</li><li data-en="Your order will be waiting at Padelbade Krtsanisi.">შეკვეთა დაგხვდება პადელბადე კრწანისში</li><li data-en="Come by 08:00 – 01:00, pay and take your racket.">მოდი 08:00 – 01:00, გადაიხადე და წაიღე ჩოგანი.</li></ol></div>
+          <div class="how"><h3 data-en="Bank transfer <i>Delivery</i>">ონლაინ გადარიცხვა <i>მიწოდება</i></h3><ol><li data-en="Choose &quot;Bank transfer&quot; and enter your address.">აირჩიე „ონლაინ გადარიცხვა“ და მიუთითე მისამართი.</li><li data-en="Transfer the amount to one of the accounts, with your order number as the payment reference.">გადმორიცხე თანხა ერთ-ერთ ანგარიშზე, დანიშნულებაში შეკვეთის ნომრით.</li><li data-en="The club will contact you and send your racket by courier. Please note that you pay the delivery fee.">კლუბიდან დაგიკავშირდებით და ჩოგანს საკურიერო მომსახურებით გამოგიგზავნით. გაითვალისწინე, მიწოდების საფასურს თავად იხდი.</li></ol>
+            <div class="accts"><div><b>TBC</b> · <code>GE27TB7579636080100019</code></div><div><b>Bank of Georgia</b> · <code>GE79BG0000000603557250</code></div><div><span data-en="Recipient:">მიმღები:</span> <b>შპს პადელბადე რუსთავი</b></div></div></div>
         </div>
       </div>
     </div>
@@ -489,53 +497,53 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
 </main>
 
 <footer>
-  <div class="wrap"><span>© 2026 Padelbade · #1 პადელ კლუბი საქართველოში</span><a href="https://padelbade.com/" target="_blank" rel="noopener">padelbade.com — კორტის დაჯავშნა</a></div>
+  <div class="wrap"><span data-en="© 2026 Padelbade · #1 padel club in Georgia">© 2026 Padelbade · #1 პადელ კლუბი საქართველოში</span><a href="https://padelbade.com/" target="_blank" rel="noopener" data-en="padelbade.com — book a court">padelbade.com — კორტის დაჯავშნა</a></div>
 </footer>
 
-<button class="fab" id="botFab" aria-label="ჩოგნის ასისტენტის გახსნა">
+<button class="fab" id="botFab" aria-label="ჩოგნის ასისტენტის გახსნა" data-en-label="Open the racket assistant">
   <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg></span>
-  <span>შეარჩიე ჩოგანი<small>AI ასისტენტი</small></span>
+  <span><span data-en="Find a racket">შეარჩიე ჩოგანი</span><small data-en="AI assistant">AI ასისტენტი</small></span>
 </button>
 
-<section class="bot" id="bot" hidden aria-label="ჩოგნის ასისტენტი">
+<section class="bot" id="bot" hidden aria-label="ჩოგნის ასისტენტი" data-en-label="Racket assistant">
   <div class="bh">
     <div class="av"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 4 6 4 10c0 3.3 2.4 6.3 5.6 7.4l1 4.6h2.8l1-4.6C17.6 16.3 20 13.3 20 10c0-4-3-8-8-8Zm0 2.2a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm-3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm6 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm-3 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z"/></svg></div>
-    <div><b>ჩოგნის ასისტენტი</b><small id="botMode">Padelbade · AI</small></div>
-    <button class="x" id="botClose" aria-label="დახურვა">×</button>
+    <div><b data-en="Racket assistant">ჩოგნის ასისტენტი</b><small id="botMode">Padelbade · AI</small></div>
+    <button class="x" id="botClose" aria-label="დახურვა" data-en-label="Close">×</button>
   </div>
   <div class="msgs" id="msgs" aria-live="polite"></div>
   <div class="qr" id="qr"></div>
   <form class="bf" id="botForm">
-    <input id="botIn" placeholder="მაგ.: ვიწყებ, ბიუჯეტი 400 ₾" aria-label="შეტყობინება" autocomplete="off">
-    <button type="submit" id="botSend">გაგზავნა</button>
+    <input id="botIn" placeholder="მაგ.: ვიწყებ, ბიუჯეტი 400 ₾" data-en-ph="E.g. I'm a beginner, budget 400 ₾" aria-label="შეტყობინება" data-en-label="Message" autocomplete="off">
+    <button type="submit" id="botSend" data-en="Send">გაგზავნა</button>
   </form>
-  <div class="bnote" id="botNote">ასისტენტი არჩევს მხოლოდ ჩვენს მაღაზიაში არსებული ჩოგნებიდან.</div>
+  <div class="bnote" id="botNote" data-en="The assistant only picks from rackets in our shop.">ასისტენტი არჩევს მხოლოდ ჩვენს მაღაზიაში არსებული ჩოგნებიდან.</div>
 </section>
 
 <div class="overlay" id="overlay" hidden></div>
 
-<aside class="drawer" id="drawer" hidden aria-label="კალათა">
-  <div class="dh"><h2>კალათა</h2><button class="x" id="closeCart" aria-label="დახურვა">×</button></div>
+<aside class="drawer" id="drawer" hidden aria-label="კალათა" data-en-label="Cart">
+  <div class="dh"><h2 data-en="Cart">კალათა</h2><button class="x" id="closeCart" aria-label="დახურვა" data-en-label="Close">×</button></div>
   <div class="dbody" id="lines"></div>
   <form class="dfoot" id="checkout" novalidate>
     <fieldset class="paym">
-      <legend>როგორ გსურს შეძენა?</legend>
-      <label class="pm"><input type="radio" name="pay" id="pay-cash" value="cash" checked><span><b>ადგილზე გადახდა</b><small>დაჯავშნე ჩოგანი და გადაიხადე ადგილზე</small></span></label>
-      <label class="pm"><input type="radio" name="pay" id="pay-bank" value="bank"><span><b>ონლაინ გადარიცხვა</b><small>გადმორიცხე თანხა, დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით</small></span></label>
+      <legend data-en="How would you like to buy?">როგორ გსურს შეძენა?</legend>
+      <label class="pm"><input type="radio" name="pay" id="pay-cash" value="cash" checked><span><b data-en="Pay on site">ადგილზე გადახდა</b><small data-en="Reserve the racket and pay at the club">დაჯავშნე ჩოგანი და გადაიხადე ადგილზე</small></span></label>
+      <label class="pm"><input type="radio" name="pay" id="pay-bank" value="bank"><span><b data-en="Bank transfer">ონლაინ გადარიცხვა</b><small data-en="Transfer the amount, we'll contact you and ship the racket the same day">გადმორიცხე თანხა, დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით</small></span></label>
     </fieldset>
     <div class="bankbox" id="bankBox" hidden>
-      <div class="acct"><span class="bk tbc">TBC</span><code class="iban num">GE27TB7579636080100019</code><button type="button" class="cpy" data-copy="GE27TB7579636080100019" aria-label="TBC ანგარიშის კოპირება"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>კოპირება</span></button></div>
-      <div class="acct"><span class="bk bog">Bank of Georgia</span><code class="iban num">GE79BG0000000603557250</code><button type="button" class="cpy" data-copy="GE79BG0000000603557250" aria-label="Bank of Georgia ანგარიშის კოპირება"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>კოპირება</span></button></div>
-      <div class="rcp"><span>მიმღები</span><b>შპს პადელბადე რუსთავი</b></div>
-      <p class="dlv">ჩოგანს საკურიერო მომსახურებით გამოგიგზავნით. გაითვალისწინე, მიწოდების საფასურს თავად იხდი.</p>
+      <div class="acct"><span class="bk tbc">TBC</span><code class="iban num">GE27TB7579636080100019</code><button type="button" class="cpy" data-copy="GE27TB7579636080100019" aria-label="TBC ანგარიშის კოპირება" data-en-label="Copy TBC account"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span data-en="Copy">კოპირება</span></button></div>
+      <div class="acct"><span class="bk bog">Bank of Georgia</span><code class="iban num">GE79BG0000000603557250</code><button type="button" class="cpy" data-copy="GE79BG0000000603557250" aria-label="Bank of Georgia ანგარიშის კოპირება" data-en-label="Copy Bank of Georgia account"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span data-en="Copy">კოპირება</span></button></div>
+      <div class="rcp"><span data-en="Recipient">მიმღები</span><b>შპს პადელბადე რუსთავი</b></div>
+      <p class="dlv" data-en="We'll send the racket by courier. Please note that you pay the delivery fee.">ჩოგანს საკურიერო მომსახურებით გამოგიგზავნით. გაითვალისწინე, მიწოდების საფასურს თავად იხდი.</p>
     </div>
     <div class="fields">
-      <input id="cname" placeholder="სახელი" aria-label="სახელი" autocomplete="name">
-      <input id="cphone" placeholder="ტელეფონი" aria-label="ტელეფონი" inputmode="tel" autocomplete="tel">
-      <input id="caddr" placeholder="მიწოდების მისამართი" aria-label="მიწოდების მისამართი" autocomplete="street-address" hidden>
+      <input id="cname" placeholder="სახელი" aria-label="სახელი" data-en-ph="Name" data-en-label="Name" autocomplete="name">
+      <input id="cphone" placeholder="ტელეფონი" aria-label="ტელეფონი" data-en-ph="Phone" data-en-label="Phone" inputmode="tel" autocomplete="tel">
+      <input id="caddr" placeholder="მიწოდების მისამართი" aria-label="მიწოდების მისამართი" data-en-ph="Delivery address" data-en-label="Delivery address" autocomplete="street-address" hidden>
     </div>
     <div>
-      <div class="sum"><span>პროდუქცია</span><span class="num" id="sub1">0 ₾</span></div>
+      <div class="sum"><span data-en="Products">პროდუქცია</span><span class="num" id="sub1">0 ₾</span></div>
       <div class="sum total"><span id="totLabel">გადასახდელი კრწანისში</span><span class="num" id="tot">0 ₾</span></div>
     </div>
     <div id="formMsg"></div>
@@ -548,12 +556,15 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
 
 <script src="config.js"></script>
 <script>
+/* language: Georgian by default; English via the header switch (remembered) or ?lang=en */
+let lang=(()=>{try{const q=new URLSearchParams(location.search).get("lang");if(q==="en"||q==="ka")return q;return localStorage.getItem("pb-lang")==="en"?"en":"ka"}catch(e){return "ka"}})();
+const T=(ka,en)=>lang==="en"?en:ka;
 const CATS=[
-  ["all","ყველა"],["racket","ჩოგნები"],["ball","ბურთები"],["bag","ჩანთები"]];
+  ["all","ყველა","All"],["racket","ჩოგნები","Rackets"],["ball","ბურთები","Balls"],["bag","ჩანთები","Bags"]];
 const SHAPE_NAME={round:"Round",tear:"Teardrop",hybrid:"Hybrid",diamond:"Diamond"};
 const LEVEL_NAME={1:"Beginner",2:"Intermediate",3:"Advanced"};
-const BAL_NAME={low:"დაბალი",mid:"საშუალო",high:"მაღალი"};
-const STYLE_NAME={control:"კონტროლი",allround:"უნივერსალური",power:"შეტევა"};
+const BAL_NAME={low:"დაბალი",mid:"საშუალო",high:"მაღალი"},BAL_EN={low:"Low",mid:"Medium",high:"High"};
+const STYLE_NAME={control:"კონტროლი",allround:"უნივერსალური",power:"შეტევა"},STYLE_EN={control:"Control",allround:"All-round",power:"Power"};
 
 const P=[
  {id:"r1",stock:1,cat:"racket",brand:"Babolat",name:"Stima Vita",price:300,shape:"round",weight:"345 გ",balance:"დაბალი",core:"EVA",face:"მინაბოჭკო",level:1,r:[5,8,9],yt:"jjHCP84tIGI",c:["#2A2A2A","#C1D885","#FFFFFF"],desc:"მსუბუქი ჩოგანი დიდი sweet spot-ით და Hybrid ჩარჩოთი. კომფორტული დამწყებთათვის."},
@@ -581,6 +592,39 @@ const P=[
  {id:"g1",stock:2,cat:"bag",brand:"Bullpadel",name:"Ionic ჩანთა",price:200,kind:"thermo",c:["#2A2A2A","#E8622C"],desc:"Bullpadel BPP-25005 Ionic (2025): ტევადი ჩანთა რამდენიმე ჩოგნისთვის, თერმო განყოფილებით, ვენტილირებადი ფეხსაცმლის ჯიბით და დამატებითი ჯიბეებით აქსესუარებისთვის.",specs:[["მოდელი","BPP-25005 Ionic"],["ფერი","შავი / ნარინჯისფერი"],["განყოფილებები","თერმო + ფეხსაცმელი + აქსესუარები"],["მასალა","გამძლე პოლიესტერი"]]},
  {id:"g2",stock:3,cat:"bag",brand:"Bullpadel",name:"APA ჩანთა",price:200,kind:"thermo",c:["#1F2A44","#7FB2E5"],desc:"Bullpadel BPP-22005 APA: არგენტინის პადელის ასოციაციის (APA) ოფიციალური ჩანთა, მუქი ლურჯი ღია ლურჯი დეტალებით. თერმო ჯიბე ჩოგნებისთვის და დიდი სივრცე ფორმისა და აქსესუარებისთვის.",specs:[["მოდელი","BPP-22005 APA"],["ფერი","მუქი ლურჯი"],["ზომა","60 × 30 × 40 სმ"],["განყოფილებები","Thermopocket + მთავარი"],["მასალა","680D პოლიესტერი"]]},
 ];
+
+/* English product text; anything missing falls back to the Georgian field with units and spec terms translated by tx() */
+const P_EN={
+ r1:{desc:"Light racket with a big sweet spot and a hybrid frame. Comfortable for beginners."},
+ r2:{desc:"Babolat's top model. Teardrop shape and 16K carbon for strong attacking play."},
+ r3:{desc:"Teardrop shape with a balance of power and control."},
+ r4:{desc:"Low balance and easy control. A good first racket."},
+ r5:{desc:"Round racket from the Advanced Series with a hard core. Control and a powerful hit. Comes with a Smart Strap."},
+ r6:{desc:"The control version of the Hack series, with a round shape."},
+ r7:{desc:"The light version of the Ionic series. Quick reactions at the net."},
+ r8:{desc:"The power version of the Ionic series for attacking play."},
+ r9:{desc:"Diamond shape and high balance for a powerful smash."},
+ r10:{desc:"Bullpadel's 2027 top model. Power+ for maximum power."},
+ r11:{desc:"Hybrid racket from the Siux Diablo series with 12K carbon. A balance of control and power."},
+ r12:{desc:"Pablo Cardona's racket. Geo shape (a diamond with wide shoulders) with a big sweet spot, high balance and a soft feel for strong attacking play."},
+ r13:{desc:"The all-round version of Paquito Navarro's Hack series. Medium balance, a central sweet spot and a soft feel for attack and defence."},
+ r14:{desc:"Fede Chingotto's racket. Hybrid shape, stiff 3K carbon and precise control for defence and net play."},
+ g1:{name:"Ionic bag",desc:"Bullpadel BPP-25005 Ionic (2025): a roomy bag for several rackets, with a thermal compartment, a ventilated shoe pocket and extra pockets for accessories.",specs:[["Model","BPP-25005 Ionic"],["Colour","Black / orange"],["Compartments","Thermal + shoes + accessories"],["Material","Durable polyester"]]},
+ g2:{name:"APA bag",desc:"Bullpadel BPP-22005 APA: the official bag of the Argentine Padel Association (APA), dark blue with light blue details. A thermal pocket for rackets and plenty of room for clothing and accessories.",specs:[["Model","BPP-22005 APA"],["Colour","Dark blue"],["Size","60 × 30 × 40 cm"],["Compartments","Thermopocket + main"],["Material","680D polyester"]]},
+};
+/* balls: one description per ball, shared by the can and its 24-can box */
+for(const [id,d] of Object.entries({
+ b1:"Wilson Rush 100: a fast, pressurised ball for lively play.",
+ b2:"Tecnifibre Padel Team: a durable ball with a consistent bounce, good for training and everyday play.",
+ b3:"Bullpadel Tournament Pro: a tournament-grade ball for fast, controlled play.",
+ b4:"Bullpadel FIP Next: the official ball of the International Padel Federation (FIP).",
+})){
+ P_EN[id]={desc:d+" 3 balls per can.",specs:[["Pack","Can, 3 balls"]]};
+ P_EN[id+"x"]={name:P.find(p=>p.id===id).name+" · Box",badge:"24 cans",desc:d+" 24 cans per box, 72 balls in total. You save 70 ₾ compared with buying the cans one by one.",specs:[["Pack","24 cans, 72 balls"]]};
+}
+const TERMS=[["მინაბოჭკო","Fiberglass"],["კარბონი","Carbon"],["მყარი","Hard"],["დაბალი","Low"],["საშუალო","Medium"],["მაღალი","High"],["მმ","mm"],["გ","g"]];
+const tx=s=>lang==="en"&&typeof s==="string"?TERMS.reduce((a,[k,e])=>a.split(k).join(e),s):s;
+const L=(p,k)=>lang==="en"&&P_EN[p.id]&&P_EN[p.id][k]!=null?P_EN[p.id][k]:tx(p[k]);
 
 const SHAPES={
  round:"M100,16 C150,16 172,56 172,96 C172,140 140,172 100,176 C60,172 28,140 28,96 C28,56 50,16 100,16Z",
@@ -679,8 +723,8 @@ const HQ={
 };
 const photo=(id,alt,lazy)=>HQ[id]?`<img src="${galSrc(HQ[id])}" data-fb="${id}" onerror="this.onerror=null;this.src=IMG[this.dataset.fb]" alt="${alt}"${lazy?' loading="lazy"':""} decoding="async" referrerpolicy="no-referrer">`:`<img src="${IMG[id]}" alt="${alt}"${lazy?' loading="lazy"':""}>`;
 const art=(p,u)=>IMG[p.id]?photo(p.id,full(p),true):p.cat==="racket"?racketSVG(p,u):otherSVG(p);
-const fmt=n=>n==null?"ფასი კლუბში":n.toLocaleString("en-US").replace(/,/g," ")+" ₾";
-const full=p=>(p.brand?p.brand+" ":"")+p.name;
+const fmt=n=>n==null?T("ფასი კლუბში","Price at the club"):n.toLocaleString("en-US").replace(/,/g," ")+" ₾";
+const full=p=>(p.brand?p.brand+" ":"")+L(p,"name");
 const byId=id=>P.find(p=>p.id===id);
 
 /* state */
@@ -691,23 +735,23 @@ const balOf=p=>p.balance?Object.keys(BAL_NAME).find(k=>p.balance.startsWith(BAL_
 // play style isn't stored per racket yet, so derive it from balance and shape unless p.style is set
 const styleOf=p=>p.style||(balOf(p)==="low"||p.shape==="round"?"control":balOf(p)==="high"||p.shape==="diamond"?"power":"allround");
 const FILTERS=[
- ["brand","ბრენდი",()=>[...new Set(P.filter(p=>p.cat==="racket"&&p.brand).map(p=>p.brand))].map(b=>[b,b]),(p,v)=>p.brand===v],
- ["price","ფასი",()=>[["lo","400 ₾-მდე"],["mid","401–600 ₾"],["hi","600 ₾-ზე მეტი"]],(p,v)=>p.price!=null&&(v==="lo"?p.price<=400:v==="mid"?p.price>400&&p.price<=600:p.price>600)],
- ["weight","წონა",()=>[["lo","355 გ-მდე"],["mid","356–365 გ"],["hi","366 გ-ზე მეტი"]],(p,v)=>{const g=grams(p);return g!=null&&(v==="lo"?g<=355:v==="mid"?g>355&&g<=365:g>365)}],
- ["shape","ფორმა",()=>Object.entries(SHAPE_NAME),(p,v)=>p.shape===v],
- ["balance","ბალანსი",()=>Object.entries(BAL_NAME),(p,v)=>balOf(p)===v],
- ["level","რეკომენდირებული დონე",()=>Object.entries(LEVEL_NAME),(p,v)=>String(p.level)===String(v)],
- ["style","თამაშის სტილი",()=>Object.entries(STYLE_NAME),(p,v)=>styleOf(p)===v],
+ ["brand",()=>T("ბრენდი","Brand"),()=>[...new Set(P.filter(p=>p.cat==="racket"&&p.brand).map(p=>p.brand))].map(b=>[b,b]),(p,v)=>p.brand===v],
+ ["price",()=>T("ფასი","Price"),()=>[["lo",T("400 ₾-მდე","Up to 400 ₾")],["mid","401–600 ₾"],["hi",T("600 ₾-ზე მეტი","Over 600 ₾")]],(p,v)=>p.price!=null&&(v==="lo"?p.price<=400:v==="mid"?p.price>400&&p.price<=600:p.price>600)],
+ ["weight",()=>T("წონა","Weight"),()=>[["lo",T("355 გ-მდე","Up to 355 g")],["mid",T("356–365 გ","356–365 g")],["hi",T("366 გ-ზე მეტი","366 g and over")]],(p,v)=>{const g=grams(p);return g!=null&&(v==="lo"?g<=355:v==="mid"?g>355&&g<=365:g>365)}],
+ ["shape",()=>T("ფორმა","Shape"),()=>Object.entries(SHAPE_NAME),(p,v)=>p.shape===v],
+ ["balance",()=>T("ბალანსი","Balance"),()=>Object.keys(BAL_NAME).map(k=>[k,T(BAL_NAME[k],BAL_EN[k])]),(p,v)=>balOf(p)===v],
+ ["level",()=>T("რეკომენდირებული დონე","Recommended level"),()=>Object.entries(LEVEL_NAME),(p,v)=>String(p.level)===String(v)],
+ ["style",()=>T("თამაშის სტილი","Playing style"),()=>Object.keys(STYLE_NAME).map(k=>[k,T(STYLE_NAME[k],STYLE_EN[k])]),(p,v)=>styleOf(p)===v],
 ];
 const resetF=()=>FILTERS.forEach(([k])=>state[k]=null);
 const passF=(p,skip)=>FILTERS.every(([k,,,test])=>k===skip||state[k]==null||test(p,state[k]));
 const left=p=>p.price==null?0:Math.max(0,p.stock-(cart[p.id]||0));
 function stockHTML(p,bar){
  const n=p.stock;
- if(n<=0)return `<div class="stock out">ამოიწურა</div>`;
- if(p.open)return `<div class="stock">მარაგშია</div>`+(bar?`<div class="stockbar"><i style="width:100%"></i></div>`:"");
+ if(n<=0)return `<div class="stock out">${T("ამოიწურა","Sold out")}</div>`;
+ if(p.open)return `<div class="stock">${T("მარაგშია","In stock")}</div>`+(bar?`<div class="stockbar"><i style="width:100%"></i></div>`:"");
  const low=n<=3,c=low?"low":"";
- return `<div class="stock ${c} num">${low?`დარჩა მხოლოდ ${n} ცალი`:`მარაგშია: ${n} ცალი`}</div>`+(bar?`<div class="stockbar ${c}"><i style="width:${Math.min(100,n/10*100)}%"></i></div>`:"");
+ return `<div class="stock ${c} num">${low?T(`დარჩა მხოლოდ ${n} ცალი`,`Only ${n} left`):T(`მარაგშია: ${n} ცალი`,`In stock: ${n}`)}</div>`+(bar?`<div class="stockbar ${c}"><i style="width:${Math.min(100,n/10*100)}%"></i></div>`:"");
 }
 let cart={};
 try{cart=JSON.parse(localStorage.getItem("pb-cart")||"{}")||{}}catch(e){cart={}}
@@ -736,9 +780,9 @@ async function loadStock(){
 }
 
 function renderCats(){
- $("#cats").innerHTML=CATS.map(([k,n])=>{
+ $("#cats").innerHTML=CATS.map(([k,n,e])=>{
   const c=P.filter(p=>!p.hidden&&(k==="all"||p.cat===k)).length;
-  return `<button class="chip" data-cat="${k}" aria-pressed="${state.cat===k}">${n} <small class="num">${c}</small></button>`}).join("");
+  return `<button class="chip" data-cat="${k}" aria-pressed="${state.cat===k}">${T(n,e)} <small class="num">${c}</small></button>`}).join("");
 }
 function renderSub(){
  const s=$("#sub");
@@ -746,11 +790,11 @@ function renderSub(){
  s.hidden=false;
  const base=P.filter(p=>p.cat==="racket"&&(!state.instock||p.stock>0));
  const active=FILTERS.some(([k])=>state[k]!=null);
- s.innerHTML=`<div class="fhead">ფილტრები${active?`<button class="clear" data-clearf="1">გასუფთავება</button>`:""}</div>`
- +FILTERS.map(([k,label,opts,test])=>`<div class="fg" role="group" aria-label="${label}"><span>${label}:</span>`+opts().map(([v,n])=>{
+ s.innerHTML=`<div class="fhead">${T("ფილტრები","Filters")}${active?`<button class="clear" data-clearf="1">${T("გასუფთავება","Clear")}</button>`:""}</div>`
+ +FILTERS.map(([k,label,opts,test])=>`<div class="fg" role="group" aria-label="${label()}"><span>${label()}:</span>`+opts().map(([v,n])=>{
   const on=String(state[k])===String(v),c=base.filter(p=>passF(p,k)&&test(p,v)).length;
   return `<button class="mini" data-f="${k}" data-v="${v}" aria-pressed="${on}"${!c&&!on?" disabled":""}>${n}<small class="num">${c}</small></button>`}).join("")+`</div>`).join("")
- +(state.weight?`<div class="note">წონის ფილტრი აჩვენებს მხოლოდ იმ ჩოგნებს, რომელთა წონაც მითითებულია.</div>`:"");
+ +(state.weight?`<div class="note">${T("წონის ფილტრი აჩვენებს მხოლოდ იმ ჩოგნებს, რომელთა წონაც მითითებულია.","The weight filter only shows rackets with a listed weight.")}</div>`:"");
 }
 /* balls come as a can or a 24-can box; the box is its own product (p.of) so the cart works unchanged */
 let pk={};
@@ -758,11 +802,11 @@ const packOf=p=>byId(pk[p.id])||p;
 function packHTML(p){
  const b=p.of?byId(p.of):p;if(!b.box)return "";
  const x=byId(b.box);
- return `<div class="pack" role="group" aria-label="შეფუთვა">${[[b,"ქილა"],[x,"ყუთი"]].map(([v,l])=>`<button type="button" data-pack="${v.id}" aria-pressed="${v.id===p.id}">${l}<small class="num">${fmt(v.price)}</small></button>`).join("")}</div>`;
+ return `<div class="pack" role="group" aria-label="${T("შეფუთვა","Pack")}">${[[b,T("ქილა","Can")],[x,T("ყუთი","Box")]].map(([v,l])=>`<button type="button" data-pack="${v.id}" aria-pressed="${v.id===p.id}">${l}<small class="num">${fmt(v.price)}</small></button>`).join("")}</div>`;
 }
 function specChips(p){
- if(p.cat==="racket")return [SHAPE_NAME[p.shape],p.weight,LEVEL_NAME[p.level]].filter(Boolean);
- return (p.specs||[]).slice(0,2).map(s=>s[1]);
+ if(p.cat==="racket")return [SHAPE_NAME[p.shape],tx(p.weight),LEVEL_NAME[p.level]].filter(Boolean);
+ return (L(p,"specs")||[]).slice(0,2).map(s=>s[1]);
 }
 function renderGrid(){
  let list=P.filter(p=>!p.hidden&&(state.cat==="all"||p.cat===state.cat)).map(packOf);
@@ -770,24 +814,24 @@ function renderGrid(){
   list=list.filter(p=>passF(p));
  }
  const q=state.q.trim().toLowerCase();
- if(q)list=list.filter(p=>(full(p)).toLowerCase().includes(q));
+ if(q)list=list.filter(p=>(full(p)+" "+p.name).toLowerCase().includes(q));
  if(state.instock)list=list.filter(p=>p.stock>0);
  if(state.sort==="asc")list=[...list].sort((a,b)=>(a.price??1e9)-(b.price??1e9));
  if(state.sort==="desc")list=[...list].sort((a,b)=>(b.price??-1)-(a.price??-1));
  list=[...list].sort((a,b)=>(a.stock>0?0:1)-(b.stock>0?0:1));
- $("#shopTitle").textContent=state.brand&&state.cat==="racket"?state.brand+" ჩოგნები":state.cat==="all"?"ყველა პროდუქტი":CATS.find(c=>c[0]===state.cat)[1];
- if(!list.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1">ამ ფილტრით პროდუქტი ვერ მოიძებნა. სცადე სხვა კომბინაცია ან გაასუფთავე ფილტრები.</div>`;return}
+ $("#shopTitle").textContent=state.brand&&state.cat==="racket"?state.brand+T(" ჩოგნები"," rackets"):state.cat==="all"?T("ყველა პროდუქტი","All products"):(c=>T(c[1],c[2]))(CATS.find(c=>c[0]===state.cat));
+ if(!list.length){$("#grid").innerHTML=`<div class="empty" style="grid-column:1/-1">${T("ამ ფილტრით პროდუქტი ვერ მოიძებნა. სცადე სხვა კომბინაცია ან გაასუფთავე ფილტრები.","No products match these filters. Try another combination or clear the filters.")}</div>`;return}
  $("#grid").innerHTML=list.map(p=>`
   <article class="card${p.stock<=0?" soldout":""}">
-   ${(b=>GAL[p.id]?picHTML(p,"c"+p.id,true,b):`<button class="pic" data-open="${p.id}" aria-label="${full(p)} — დეტალები">${b}${art(p,"c"+p.id)}</button>`)(p.stock<=0?`<span class="badge sale">ამოიწურა</span>`:p.old?`<span class="badge sale">-${Math.round((1-p.price/p.old)*100)}%</span>`:p.badge?`<span class="badge">${p.badge}</span>`:"")}
+   ${(b=>GAL[p.id]?picHTML(p,"c"+p.id,true,b):`<button class="pic" data-open="${p.id}" aria-label="${full(p)} — ${T("დეტალები","details")}">${b}${art(p,"c"+p.id)}</button>`)(p.stock<=0?`<span class="badge sale">${T("ამოიწურა","Sold out")}</span>`:p.old?`<span class="badge sale">-${Math.round((1-p.price/p.old)*100)}%</span>`:p.badge?`<span class="badge">${L(p,"badge")}</span>`:"")}
    <div class="body">
     <div class="brandname">${p.brand}</div>
-    <h3>${p.name}</h3>
+    <h3>${L(p,"name")}</h3>
     <div class="specs">${specChips(p).map(s=>`<span class="spec">${s}</span>`).join("")}</div>
     ${packHTML(p)}
     ${stockHTML(p,true)}
     <div class="foot"><div class="price num">${fmt(p.price)}${p.old?`<s>${fmt(p.old)}</s>`:""}</div>
-     <button class="add" data-add="${p.id}"${left(p)<=0?" disabled":""}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>${p.stock<=0?"ამოიწურა":p.price==null?"ფასი კლუბში":left(p)<=0?"ყველა კალათაშია":"კალათაში"}</button></div>
+     <button class="add" data-add="${p.id}"${left(p)<=0?" disabled":""}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>${p.stock<=0?T("ამოიწურა","Sold out"):p.price==null?T("ფასი კლუბში","Price at the club"):left(p)<=0?T("ყველა კალათაშია","All in cart"):T("კალათაში","Add to cart")}</button></div>
    </div>
   </article>`).join("");
  $("#grid").querySelectorAll(".gal").forEach(initGallery);
@@ -798,19 +842,19 @@ function renderAll(){renderCats();renderSub();renderGrid()}
 function count(){return Object.values(cart).reduce((a,b)=>a+b,0)}
 function addToCart(id,n=1){
  const p=byId(id),room=left(p);
- if(p.price==null){toast("ფასი დაზუსტდება კლუბში. მოგვწერეთ ან მობრძანდით კრწანისში.");return false}
- if(room<=0){toast(p.stock<=0?"ეს პროდუქტი ამოიწურა":`მარაგში მხოლოდ ${p.stock} ცალია და ყველა უკვე კალათაშია`);return false}
+ if(p.price==null){toast(T("ფასი დაზუსტდება კლუბში. მოგვწერეთ ან მობრძანდით კრწანისში.","The price is confirmed at the club. Message us or visit us in Krtsanisi."));return false}
+ if(room<=0){toast(p.stock<=0?T("ეს პროდუქტი ამოიწურა","This product is sold out"):T(`მარაგში მხოლოდ ${p.stock} ცალია და ყველა უკვე კალათაშია`,`Only ${p.stock} in stock and all are already in your cart`));return false}
  const add=Math.min(n,room);cart[id]=(cart[id]||0)+add;save();renderCart();renderGrid();
- toast(add<n?`მარაგში მხოლოდ ${p.stock} ცალია. კალათაში დაემატა ${add}`:`<b>✓</b> ${full(p)} დაემატა კალათაში`);return true}
+ toast(add<n?T(`მარაგში მხოლოდ ${p.stock} ცალია. კალათაში დაემატა ${add}`,`Only ${p.stock} in stock. Added ${add} to the cart`):T(`<b>✓</b> ${full(p)} დაემატა კალათაში`,`<b>✓</b> ${full(p)} added to the cart`));return true}
 function renderCart(){
  $("#cartCount").textContent=count();
  const ids=Object.keys(cart).filter(id=>byId(id));
  $("#lines").innerHTML=ids.length?ids.map(id=>{const p=byId(id);return `
   <div class="line"><div class="th">${art(p,"l"+id)}</div>
    <div class="nm">${full(p)}<small class="num">${fmt(p.price)}</small>
-    <div class="qty"><button data-dec="${id}" aria-label="შემცირება">−</button><span class="num">${cart[id]}</span><button data-inc="${id}" aria-label="გაზრდა"${cart[id]>=p.stock?" disabled":""}>+</button></div>${cart[id]>=p.stock?`<small>მარაგში სულ ${p.stock} ცალია</small>`:""}</div>
-   <div class="rt num">${fmt(p.price*cart[id])}<button class="rm" data-rm="${id}">წაშლა</button></div></div>`}).join("")
-  :`<div class="empty" style="margin-top:16px">კალათა ცარიელია.<br>დაამატე ჩოგანი, ბურთები ან ეკიპირება.</div>`;
+    <div class="qty"><button data-dec="${id}" aria-label="${T("შემცირება","Decrease")}">−</button><span class="num">${cart[id]}</span><button data-inc="${id}" aria-label="${T("გაზრდა","Increase")}"${cart[id]>=p.stock?" disabled":""}>+</button></div>${cart[id]>=p.stock?`<small>${T(`მარაგში სულ ${p.stock} ცალია`,`Only ${p.stock} in stock`)}</small>`:""}</div>
+   <div class="rt num">${fmt(p.price*cart[id])}<button class="rm" data-rm="${id}">${T("წაშლა","Remove")}</button></div></div>`}).join("")
+  :`<div class="empty" style="margin-top:16px">${T("კალათა ცარიელია.<br>დაამატე ჩოგანი, ბურთები ან ეკიპირება.","Your cart is empty.<br>Add a racket, balls or gear.")}</div>`;
  const sub=ids.reduce((s,id)=>s+byId(id).price*cart[id],0);
  $("#sub1").textContent=fmt(sub);$("#tot").textContent=fmt(sub);
 }
@@ -821,19 +865,19 @@ function closeAll(){$("#overlay").hidden=true;$("#drawer").hidden=true;$("#modal
 let mq=1;
 function openModal(id){
  const p=byId(id);mq=1;
- const rows=(p.cat==="racket"?[["ფორმა",SHAPE_NAME[p.shape]],["წონა",p.weight],["ბალანსი",p.balance],["ზედაპირი",p.face]]:(p.specs||[])).filter(r=>r[1]);
+ const rows=(p.cat==="racket"?[[T("ფორმა","Shape"),SHAPE_NAME[p.shape]],[T("წონა","Weight"),tx(p.weight)],[T("ბალანსი","Balance"),tx(p.balance)],[T("ზედაპირი","Face"),tx(p.face)]]:(L(p,"specs")||[])).filter(r=>r[1]);
  $("#mbox").innerHTML=`${picHTML(p,"m"+id)}
-  <div class="info"><div class="brandname eyebrow">${p.brand}</div><h3>${p.name}</h3>
+  <div class="info"><div class="brandname eyebrow">${p.brand}</div><h3>${L(p,"name")}</h3>
    <div class="price num">${fmt(p.price)}${p.old?`<s>${fmt(p.old)}</s>`:""}</div>
    ${packHTML(p)}
    ${stockHTML(p,false)}
-   <p>${p.desc}</p>
-   ${rows.length?`${p.cat==="racket"?"<h4>ტექნიკური მახასიათებლები</h4>":""}<dl>${rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}</dl>`:""}
+   <p>${L(p,"desc")}</p>
+   ${rows.length?`${p.cat==="racket"?`<h4>${T("ტექნიკური მახასიათებლები","Specifications")}</h4>`:""}<dl>${rows.map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join("")}</dl>`:""}
    ${racketExtra(p)}
-   <div class="mrow"><div class="qty"><button id="mdec" aria-label="შემცირება">−</button><span class="num" id="mq">1</span><button id="minc" aria-label="გაზრდა">+</button></div>
-    <button class="add" id="madd"${left(p)<=0?" disabled":""}>${p.stock<=0?"ამოიწურა":p.price==null?"ფასი კლუბში":left(p)<=0?"ყველა უკვე კალათაშია":"კალათაში დამატება"}</button></div></div>
+   <div class="mrow"><div class="qty"><button id="mdec" aria-label="${T("შემცირება","Decrease")}">−</button><span class="num" id="mq">1</span><button id="minc" aria-label="${T("გაზრდა","Increase")}">+</button></div>
+    <button class="add" id="madd"${left(p)<=0?" disabled":""}>${p.stock<=0?T("ამოიწურა","Sold out"):p.price==null?T("ფასი კლუბში","Price at the club"):left(p)<=0?T("ყველა უკვე კალათაშია","All already in cart"):T("კალათაში დამატება","Add to cart")}</button></div></div>
   ${videoHTML(p)}
-  <button class="x" id="mclose" aria-label="დახურვა">×</button>`;
+  <button class="x" id="mclose" aria-label="${T("დახურვა","Close")}">×</button>`;
  $("#mbox").setAttribute("aria-label",full(p));$("#mbox").dataset.id=id;
  $("#overlay").hidden=false;$("#modal").hidden=false;$("#mclose").focus();
  $("#mdec").onclick=()=>{mq=Math.max(1,mq-1);$("#mq").textContent=mq};
@@ -844,31 +888,31 @@ function openModal(id){
 }
 function racketExtra(p){
  if(p.cat!=="racket")return "";
- const R=p.r?`<h4>შეფასება (1–10)</h4><div class="rates">${["Power","Control","Comfort"].map((n,i)=>`<div class="rate"><span>${n}</span><span class="bar" role="img" aria-label="${n}: ${p.r[i]} / 10"><i style="width:${p.r[i]*10}%"></i></span><b class="num">${p.r[i]}</b></div>`).join("")}</div>`:"";
- const L=p.level?`<h4>რეკომენდირებული დონე</h4><div class="lvls">${Object.entries(LEVEL_NAME).map(([k,n])=>`<span${+k===p.level?' class="on" aria-current="true"':""}>${n}</span>`).join("")}</div>`:"";
- return R+L;
+ const R=p.r?`<h4>${T("შეფასება","Rating")} (1–10)</h4><div class="rates">${["Power","Control","Comfort"].map((n,i)=>`<div class="rate"><span>${n}</span><span class="bar" role="img" aria-label="${n}: ${p.r[i]} / 10"><i style="width:${p.r[i]*10}%"></i></span><b class="num">${p.r[i]}</b></div>`).join("")}</div>`:"";
+ const Lv=p.level?`<h4>${T("რეკომენდირებული დონე","Recommended level")}</h4><div class="lvls">${Object.entries(LEVEL_NAME).map(([k,n])=>`<span${+k===p.level?' class="on" aria-current="true"':""}>${n}</span>`).join("")}</div>`:"";
+ return R+Lv;
 }
 function videoHTML(p){
  if(!p.yt)return "";
- return `<div class="mvid" id="mvid"><h4>ვიდეომიმოხილვა</h4>
-  <div class="yt"><button type="button" id="ytplay" aria-label="ვიდეოს ჩართვა: ${full(p)}"><img src="https://i.ytimg.com/vi/${p.yt}/hqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer"><span class="play"></span></button></div>
-  <a href="https://www.youtube.com/watch?v=${p.yt}" target="_blank" rel="noopener">YouTube-ზე ნახვა ↗</a></div>`;
+ return `<div class="mvid" id="mvid"><h4>${T("ვიდეომიმოხილვა","Video review")}</h4>
+  <div class="yt"><button type="button" id="ytplay" aria-label="${T("ვიდეოს ჩართვა","Play video")}: ${full(p)}"><img src="https://i.ytimg.com/vi/${p.yt}/hqdefault.jpg" alt="" loading="lazy" referrerpolicy="no-referrer"><span class="play"></span></button></div>
+  <a href="https://www.youtube.com/watch?v=${p.yt}" target="_blank" rel="noopener">${T("YouTube-ზე ნახვა","Watch on YouTube")} ↗</a></div>`;
 }
 function initVideo(){
  const b=$("#ytplay");if(!b)return;
  const id=byId($("#mbox").dataset.id).yt;
  b.querySelector("img").onerror=()=>$("#mvid").remove();
- b.onclick=()=>{b.parentNode.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" title="ვიდეომიმოხილვა" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`};
+ b.onclick=()=>{b.parentNode.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" title="${T("ვიდეომიმოხილვა","Video review")}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`};
 }
 /* card=true: slides are buttons that open the product, extra photos load lazily */
 function picHTML(p,u,card,badge=""){
  const ex=GAL[p.id]||[];
  if(!ex.length)return `<div class="pic">${art(p,u)}</div>`;
  const lz=card?' loading="lazy"':"";
- const slides=[art(p,u),...ex.map((s,i)=>s.startsWith("IMG:")?photo(s.slice(4),`${full(p)}, ფოტო ${i+2}`,card):`<img src="${galSrc(s)}" alt="${full(p)}, ფოტო ${i+2}"${lz} decoding="async" referrerpolicy="no-referrer">`)];
- const sl=card?s=>`<button class="slide" data-open="${p.id}" aria-label="${full(p)} — დეტალები">${s}</button>`:s=>`<div class="slide">${s}</div>`;
+ const slides=[art(p,u),...ex.map((s,i)=>s.startsWith("IMG:")?photo(s.slice(4),`${full(p)}, ${T("ფოტო","photo")} ${i+2}`,card):`<img src="${galSrc(s)}" alt="${full(p)}, ${T("ფოტო","photo")} ${i+2}"${lz} decoding="async" referrerpolicy="no-referrer">`)];
+ const sl=card?s=>`<button class="slide" data-open="${p.id}" aria-label="${full(p)} — ${T("დეტალები","details")}">${s}</button>`:s=>`<div class="slide">${s}</div>`;
  return `<div class="pic gal">${badge}<div class="track">${slides.map(sl).join("")}</div>
-  <button class="gnav prev" aria-label="წინა ფოტო">‹</button><button class="gnav next" aria-label="შემდეგი ფოტო">›</button><div class="dots"></div></div>`;
+  <button class="gnav prev" aria-label="${T("წინა ფოტო","Previous photo")}">‹</button><button class="gnav next" aria-label="${T("შემდეგი ფოტო","Next photo")}">›</button><div class="dots"></div></div>`;
 }
 function initGallery(g){
  if(!g)return;
@@ -877,12 +921,12 @@ function initGallery(g){
  let tg=null,tt0;
  const go=i=>{tg=Math.max(0,Math.min(n()-1,i));clearTimeout(tt0);tt0=setTimeout(()=>tg=null,600);tr.scrollTo({left:tg*tr.clientWidth})},pos=()=>tg??cur();
  const sync=()=>{const i=cur(),k=n();[...dots.children].forEach((d,j)=>d.classList.toggle("on",j===i));pv.disabled=i<=0;nx.disabled=i>=k-1;dots.hidden=pv.hidden=nx.hidden=k<2};
- const build=()=>{dots.innerHTML=[...tr.children].map((_,j)=>`<button aria-label="ფოტო ${j+1}"></button>`).join("");[...dots.children].forEach((d,j)=>d.onclick=()=>go(j));sync()};
+ const build=()=>{dots.innerHTML=[...tr.children].map((_,j)=>`<button aria-label="${T("ფოტო","Photo")} ${j+1}"></button>`).join("");[...dots.children].forEach((d,j)=>d.onclick=()=>go(j));sync()};
  [...tr.children].slice(1).forEach(sl=>{const im=sl.querySelector("img");if(im&&!im.dataset.fb)im.onerror=()=>{sl.remove();build()}});
  pv.onclick=()=>go(pos()-1);nx.onclick=()=>go(pos()+1);
  tr.addEventListener("scroll",()=>requestAnimationFrame(sync),{passive:true});
  tr.addEventListener("keydown",e=>{const d={ArrowLeft:-1,ArrowRight:1}[e.key];if(d){e.preventDefault();go(pos()+d)}});
- if(!tr.querySelector("button"))tr.tabIndex=0;tr.setAttribute("aria-label","ფოტოები");
+ if(!tr.querySelector("button"))tr.tabIndex=0;tr.setAttribute("aria-label",T("ფოტოები","Photos"));
  build();
 }
 
@@ -890,25 +934,26 @@ let tt;function toast(h){const t=$("#toast");t.innerHTML=h;t.hidden=false;clearT
 
 /* guide */
 const GUIDE=[
- {s:"round",lvl:"Beginner → Intermediate",txt:"ბალანსი ჩოგნის ტართან ახლოსაა და sweet spot შედარებით დიდია. მეტი კონტროლი, ნაკლები შეცდომა.",m:[3,1,3]},
- {s:"tear",lvl:"Intermediate → Advanced",txt:"ჩოგანს ახასიათებს, როგორც ძალა, ასევე კონტროლი. ზედგამოჭრილია მოთამაშეზე, რომელიც ორივე სტილში თამაშობს.",m:[2,2,2]},
- {s:"diamond",lvl:"Advanced",txt:"მაღალი ბალანსი და შედარებით მცირე ზომის sweet spot. ჩოგანს აქვს მაქსიმალური ძალა და ნაკლები კონტროლი.",m:[1,3,1]},
+ {s:"round",lvl:"Beginner → Intermediate",txt:"ბალანსი ჩოგნის ტართან ახლოსაა და sweet spot შედარებით დიდია. მეტი კონტროლი, ნაკლები შეცდომა.",en:"The balance sits close to the handle and the sweet spot is relatively large. More control, fewer mistakes.",m:[3,1,3]},
+ {s:"tear",lvl:"Intermediate → Advanced",txt:"ჩოგანს ახასიათებს, როგორც ძალა, ასევე კონტროლი. ზედგამოჭრილია მოთამაშეზე, რომელიც ორივე სტილში თამაშობს.",en:"Combines power and control. Made for players who play both styles.",m:[2,2,2]},
+ {s:"diamond",lvl:"Advanced",txt:"მაღალი ბალანსი და შედარებით მცირე ზომის sweet spot. ჩოგანს აქვს მაქსიმალური ძალა და ნაკლები კონტროლი.",en:"High balance and a relatively small sweet spot. Maximum power, less control.",m:[1,3,1]},
 ];
-$("#shapes").innerHTML=GUIDE.map(g=>{
+const renderGuide=()=>$("#shapes").innerHTML=GUIDE.map(g=>{
  const demo={shape:g.s,c:["#2A2A2A","#C1D885","#2B6651"],cat:"racket"};
- return `<div class="shape">${racketSVG(demo,"g"+g.s)}<div><h3>${SHAPE_NAME[g.s]}</h3><div class="lvl">${g.lvl}</div><p>${g.txt}</p>
- <div class="meter"><span>კონტროლი</span><div class="bar"><i style="width:${g.m[0]*33}%"></i></div><span>ძალა</span><div class="bar"><i style="width:${g.m[1]*33}%"></i></div><span>sweet spot</span><div class="bar"><i style="width:${g.m[2]*33}%"></i></div></div>
- <button class="linkbtn" data-goshape="${g.s}">ნახე ${SHAPE_NAME[g.s]} ჩოგნები →</button></div></div>`}).join("");
+ return `<div class="shape">${racketSVG(demo,"g"+g.s)}<div><h3>${SHAPE_NAME[g.s]}</h3><div class="lvl">${g.lvl}</div><p>${T(g.txt,g.en)}</p>
+ <div class="meter"><span>${T("კონტროლი","Control")}</span><div class="bar"><i style="width:${g.m[0]*33}%"></i></div><span>${T("ძალა","Power")}</span><div class="bar"><i style="width:${g.m[1]*33}%"></i></div><span>sweet spot</span><div class="bar"><i style="width:${g.m[2]*33}%"></i></div></div>
+ <button class="linkbtn" data-goshape="${g.s}">${T(`ნახე ${SHAPE_NAME[g.s]} ჩოგნები`,`See ${SHAPE_NAME[g.s]} rackets`)} →</button></div></div>`}).join("");
 
 
 /* events */
 document.addEventListener("click",e=>{
  const t=e.target.closest("button");if(!t)return;
- if(t.dataset.cat){state.cat=t.dataset.cat;resetF();renderAll()}
+ if(t.dataset.lang){setLang(t.dataset.lang)}
+ else if(t.dataset.cat){state.cat=t.dataset.cat;resetF();renderAll()}
  else if(t.dataset.f){const k=t.dataset.f;state[k]=String(state[k])===t.dataset.v?null:t.dataset.v;renderSub();renderGrid()}
  else if(t.dataset.clearf){resetF();renderSub();renderGrid()}
  else if(t.dataset.pack){const v=byId(t.dataset.pack);pk[v.of||v.id]=v.id;if(t.closest("#mbox"))openModal(v.id);else renderGrid()}
- else if(t.dataset.add){addToCart(t.dataset.add);t.classList.add("done");t.lastChild.textContent="დაემატა";setTimeout(()=>{t.classList.remove("done");t.lastChild.textContent="კალათაში"},1400)}
+ else if(t.dataset.add){addToCart(t.dataset.add);t.classList.add("done");t.lastChild.textContent=T("დაემატა","Added");setTimeout(()=>{t.classList.remove("done");t.lastChild.textContent=T("კალათაში","Add to cart")},1400)}
  else if(t.dataset.open){openModal(t.dataset.open)}
  else if(t.dataset.inc){addToCart(t.dataset.inc,1)}
  else if(t.dataset.dec){const id=t.dataset.dec;cart[id]--;if(cart[id]<=0)delete cart[id];save();renderCart();renderGrid()}
@@ -926,20 +971,20 @@ $("#sort").addEventListener("change",e=>{state.sort=e.target.value;renderGrid()}
 $("#instock").addEventListener("change",e=>{state.instock=e.target.checked;renderSub();renderGrid()});
 
 const payMode=()=>document.querySelector('input[name="pay"]:checked').value;
-function syncPay(){const bank=payMode()==="bank";$("#bankBox").hidden=!bank;$("#caddr").hidden=!bank;$("#totLabel").textContent=bank?"გადასარიცხი თანხა":"გადასახდელი კრწანისში";$("#coBtn").textContent=bank?"შეკვეთის გაფორმება":"დაჯავშნე აღებისთვის";$("#formMsg").innerHTML=""}
+function syncPay(){const bank=payMode()==="bank";$("#bankBox").hidden=!bank;$("#caddr").hidden=!bank;$("#totLabel").textContent=bank?T("გადასარიცხი თანხა","Amount to transfer"):T("გადასახდელი კრწანისში","To pay in Krtsanisi");$("#coBtn").textContent=bank?T("შეკვეთის გაფორმება","Place order"):T("დაჯავშნე აღებისთვის","Reserve for pickup");$("#formMsg").innerHTML=""}
 document.querySelectorAll('input[name="pay"]').forEach(r=>r.addEventListener("change",syncPay));
-document.addEventListener("click",e=>{const b=e.target.closest(".cpy");if(!b)return;const v=b.dataset.copy;const done=()=>{b.classList.add("ok");b.querySelector("span").textContent="კოპირდა";setTimeout(()=>{b.classList.remove("ok");b.querySelector("span").textContent="კოპირება"},1600)};
- const fb=()=>{const c=b.parentElement.querySelector("code");const r=document.createRange();r.selectNodeContents(c);const s=getSelection();s.removeAllRanges();s.addRange(r);toast("მონიშნულია, დააკოპირე Ctrl+C / ⌘C")};
+document.addEventListener("click",e=>{const b=e.target.closest(".cpy");if(!b)return;const v=b.dataset.copy;const done=()=>{b.classList.add("ok");b.querySelector("span").textContent=T("კოპირდა","Copied");setTimeout(()=>{b.classList.remove("ok");b.querySelector("span").textContent=T("კოპირება","Copy")},1600)};
+ const fb=()=>{const c=b.parentElement.querySelector("code");const r=document.createRange();r.selectNodeContents(c);const s=getSelection();s.removeAllRanges();s.addRange(r);toast(T("მონიშნულია, დააკოპირე Ctrl+C / ⌘C","Selected, copy with Ctrl+C / ⌘C"))};
  try{navigator.clipboard.writeText(v).then(done,fb)}catch(err){fb()}});
 $("#checkout").addEventListener("submit",async e=>{
  e.preventDefault();
  const msg=$("#formMsg"),bank=payMode()==="bank";
- if(!count()){msg.innerHTML=`<p class="note">კალათა ცარიელია. ჯერ დაამატე პროდუქტი.</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});return}
- if(!$("#cname").value.trim()||$("#cphone").value.replace(/\D/g,"").length<9){msg.innerHTML=`<p class="note" style="color:var(--sale)">შეიყვანე სახელი და ტელეფონის ნომერი (მინიმუმ 9 ციფრი).</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});return}
- if(bank&&$("#caddr").value.trim().length<5){msg.innerHTML=`<p class="note">მიუთითე მიწოდების მისამართი.</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});return}
+ if(!count()){msg.innerHTML=`<p class="note">${T("კალათა ცარიელია. ჯერ დაამატე პროდუქტი.","Your cart is empty. Add a product first.")}</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});return}
+ if(!$("#cname").value.trim()||$("#cphone").value.replace(/\D/g,"").length<9){msg.innerHTML=`<p class="note" style="color:var(--sale)">${T("შეიყვანე სახელი და ტელეფონის ნომერი (მინიმუმ 9 ციფრი).","Enter your name and phone number (at least 9 digits).")}</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});return}
+ if(bank&&$("#caddr").value.trim().length<5){msg.innerHTML=`<p class="note">${T("მიუთითე მიწოდების მისამართი.","Enter a delivery address.")}</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});return}
  let no="PB-"+String(Date.now()).slice(-5);const tot=$("#tot").textContent;
  if(DB){
-  const btn=$("#coBtn");btn.disabled=true;msg.innerHTML=`<p class="note">იგზავნება…</p>`;
+  const btn=$("#coBtn");btn.disabled=true;msg.innerHTML=`<p class="note">${T("იგზავნება…","Sending…")}</p>`;
   let r;
   try{r=await db("rpc/place_order",{p_name:$("#cname").value.trim(),p_phone:$("#cphone").value.trim(),p_address:bank?$("#caddr").value.trim():null,p_pay:bank?"bank":"cash",p_items:Object.entries(cart).map(([id,qty])=>({id,qty}))})}
   catch(err){r={ok:false,error:String(err.message||err)}}
@@ -947,27 +992,29 @@ $("#checkout").addEventListener("submit",async e=>{
   if(r.stock)applyStock(r.stock);
   if(!r.ok){
    const gone=(r.short||[]).map(x=>byId(x.id)).filter(Boolean).map(full).join(", ");
-   msg.innerHTML=`<div class="ok err" role="alert"><b class="okh">შეკვეთა ვერ გაიგზავნა</b>${r.error==="out_of_stock"?`სამწუხაროდ, ${gone?`<b style="display:inline;font-size:inherit">${esc(gone)}</b>`:"ზოგი პროდუქტი"} ამასობაში ამოიწურა. კალათა განვაახლეთ, გადახედე და სცადე ხელახლა.`:"შეამოწმე ინტერნეტი და სცადე ხელახლა."}</div>`;
-   toast("შეკვეთა ვერ გაიგზავნა");
+   msg.innerHTML=`<div class="ok err" role="alert"><b class="okh">${T("შეკვეთა ვერ გაიგზავნა","Order not sent")}</b>${r.error==="out_of_stock"?(g=>T(`სამწუხაროდ, ${g||"ზოგი პროდუქტი"} ამასობაში ამოიწურა. კალათა განვაახლეთ, გადახედე და სცადე ხელახლა.`,`Sorry, ${g||"some products"} sold out in the meantime. We updated your cart; please review it and try again.`))(gone&&`<b style="display:inline;font-size:inherit">${esc(gone)}</b>`):T("შეამოწმე ინტერნეტი და სცადე ხელახლა.","Check your internet connection and try again.")}</div>`;
+   toast(T("შეკვეთა ვერ გაიგზავნა","Order not sent"));
    msg.scrollIntoView({behavior:"smooth",block:"center"});
    if(r.error==="out_of_stock")loadStock();
    return}
   no=r.no;cart={};save();renderCart();renderGrid();
  }
  msg.innerHTML=bank
-  ?`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>შეკვეთა ${no}</b>გადმორიცხე <b style="display:inline;font-size:inherit">${tot}</b> ზემოთ მითითებულ ერთ-ერთ ანგარიშზე. დანიშნულებაში მიუთითე: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. თანხის მიღების შემდეგ დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით.</div>`
-  :`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>ჯავშანი ${no}</b>შეკვეთა დაგხვდება Padelbade კრწანისში, შენს სახელზე. ჯავშანი აქტიურია 3 დღე. გადასახდელი: ${tot}. მობრძანდი 08:00 – 01:00.</div>`;
- toast("შეკვეთა გაგზავნილია");
+  ?T(`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>შეკვეთა ${no}</b>გადმორიცხე <b style="display:inline;font-size:inherit">${tot}</b> ზემოთ მითითებულ ერთ-ერთ ანგარიშზე. დანიშნულებაში მიუთითე: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. თანხის მიღების შემდეგ დაგიკავშირდებით და ჩოგანს დღესვე გამოგიგზავნით.</div>`,
+     `<div class="ok" role="status"><b class="okh">✓ Order sent</b><b>Order ${no}</b>Transfer <b style="display:inline;font-size:inherit">${tot}</b> to one of the accounts above. Payment reference: <b style="display:inline;font-size:inherit">${no}, ${esc($("#cname").value.trim())}</b>. Once we receive the payment we'll contact you and ship the racket the same day.</div>`)
+  :T(`<div class="ok" role="status"><b class="okh">✓ შეკვეთა გაგზავნილია</b><b>ჯავშანი ${no}</b>შეკვეთა დაგხვდება Padelbade კრწანისში, შენს სახელზე. ჯავშანი აქტიურია 3 დღე. გადასახდელი: ${tot}. მობრძანდი 08:00 – 01:00.</div>`,
+     `<div class="ok" role="status"><b class="okh">✓ Order sent</b><b>Reservation ${no}</b>Your order will be waiting at Padelbade Krtsanisi under your name. The reservation is held for 3 days. To pay: ${tot}. Come by 08:00 – 01:00.</div>`);
+ toast(T("შეკვეთა გაგზავნილია","Order sent"));
  msg.scrollIntoView({behavior:"smooth",block:"center"});
 });
 
 
 /* ===== racket assistant ===== */
 const catalog=()=>P.map(p=>p.cat==="racket"
- ?{id:p.id,type:"racket",brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock,shape:p.shape,weight:p.weight,balance:p.balance,face:p.face,level:LEVEL_NAME[p.level],ratings_1_10:p.r?{power:p.r[0],control:p.r[1],comfort:p.r[2]}:null,note:p.desc}
+ ?{id:p.id,type:"racket",brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock,shape:p.shape,weight:p.weight,balance:p.balance,face:p.face,level:LEVEL_NAME[p.level],ratings_1_10:p.r?{power:p.r[0],control:p.r[1],comfort:p.r[2]}:null,note:L(p,"desc")}
  :{id:p.id,type:p.cat,brand:p.brand,name:p.name,price_gel:p.price,in_stock:p.stock});
 const rules=()=>`You are the racket-fitting assistant of the Padelbade padel club online shop (Tbilisi, Georgia).
-Reply in the customer's language; default to Georgian. Be warm and short: at most about 80 words per reply, plain text, no headings, no tables.
+Reply in the customer's language; default to ${T("Georgian","English")}. Be warm and short: at most about 80 words per reply, plain text, no headings, no tables.
 Goal: recommend the best padel racket from THIS catalog only.
 - If you do not yet know the player's level and playing style, ask first (at most 2 short questions per message). Also useful: budget, how often they play, elbow or shoulder pain.
 - Once you know enough, recommend 1 to 3 rackets. For each: one sentence on why it fits, then the token [[id]] alone on its own line. The page turns the token into a product card with picture, price and an add-to-cart button, so never write prices yourself.
@@ -990,7 +1037,7 @@ const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&qu
 function pickCard(id){
  const p=byId(id);if(!p)return "";pickN++;
  return `<div class="pick"><div class="th">${art(p,"k"+id+pickN)}</div><div><b>${full(p)}</b><span class="pr num">${fmt(p.price)}</span>
- <div class="acts"><button class="det" data-open="${id}">დეტალები</button><button class="add" data-add="${id}">კალათაში</button></div></div></div>`;
+ <div class="acts"><button class="det" data-open="${id}">${T("დეტალები","Details")}</button><button class="add" data-add="${id}">${T("კალათაში","Add to cart")}</button></div></div></div>`;
 }
 function formatAI(t){
  t=t.replace(/\[\[[^\]]*$/,"");
@@ -1001,61 +1048,61 @@ function formatAI(t){
 function bubble(cls,html){const d=document.createElement("div");d.className="msg "+cls;d.innerHTML=html;msgs.append(d);scrollMsgs();return d}
 function scrollMsgs(){msgs.scrollTop=msgs.scrollHeight}
 function setQuick(list){qr.innerHTML=list.map(([v,l])=>`<button type="button" data-qr="${v}">${l}</button>`).join("");qr.hidden=!list.length}
-function setBusy(b){busy=b;botSend.textContent=b?"შეჩერება":"გაგზავნა";botSend.classList.toggle("stop",b)}
+function setBusy(b){busy=b;botSend.textContent=b?T("შეჩერება","Stop"):T("გაგზავნა","Send");botSend.classList.toggle("stop",b)}
 
 function openBot(){bot.hidden=false;fab.hidden=true;if(!started)startBot();setTimeout(()=>botIn.focus(),50)}
 function closeBot(){bot.hidden=true;fab.hidden=false}
 function startBot(){
  started=true;
  if(sampleFn===null){toQuiz(null);return}
- bubble("ai","გამარჯობა! დაგეხმარები padelbade shop-ში შესაფერისი ჩოგნის შერჩევაში.\n\nმომიყევი, რამდენი ხანია თამაშობ და რა გიყვარს უფრო: კონტროლი თუ ძალაზე ორიენტირებული თამაში?");
+ bubble("ai",T("გამარჯობა! დაგეხმარები padelbade shop-ში შესაფერისი ჩოგნის შერჩევაში.\n\nმომიყევი, რამდენი ხანია თამაშობ და რა გიყვარს უფრო: კონტროლი თუ ძალაზე ორიენტირებული თამაში?","Hi! I'll help you find the right racket at the padelbade shop.\n\nTell me how long you've been playing and what you prefer: control or a power-focused game?"));
 }
 
 async function sendAI(text){
  bubble("me",esc(text));chat.push({role:"user",content:text});setQuick([]);
- const b=bubble("ai wait","ფიქრობს…");
+ const b=bubble("ai wait",T("ფიქრობს…","Thinking…"));
  setBusy(true);ctl=new AbortController();
  const s=sampleFn!==undefined?sampleFn:await samplePromise;
- if(!s){b.remove();setBusy(false);toQuiz("AI ჩატი ამ გვერდზე ახლა მიუწვდომელია, ამიტომ სამი მოკლე კითხვით შევარჩიოთ.");return}
+ if(!s){b.remove();setBusy(false);toQuiz(T("AI ჩატი ამ გვერდზე ახლა მიუწვდომელია, ამიტომ სამი მოკლე კითხვით შევარჩიოთ.","The AI chat isn't available on this page right now, so let's pick with three short questions."));return}
  try{
   const r=await s([{role:"user",content:rules()},...chat.slice(-12)],{cache:false,modelTier:"quick",signal:ctl.signal,
    onText:({text})=>{b.classList.remove("wait");b.innerHTML=formatAI(text);scrollMsgs()}});
   b.classList.remove("wait");b.innerHTML=formatAI(r.text);chat.push({role:"assistant",content:r.text});
-  if(r.truncated)bubble("ai err","პასუხი შეწყდა. დამიზუსტე კითხვა.");
+  if(r.truncated)bubble("ai err",T("პასუხი შეწყდა. დამიზუსტე კითხვა.","The answer was cut off. Please clarify your question."));
  }catch(e){
   const code=e&&e.code;
   if(e&&e.text&&code!=="refused"){b.classList.remove("wait");b.innerHTML=formatAI(e.text);chat.push({role:"assistant",content:e.text})}else b.remove();
   if(code==="cancelled"){}
-  else if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(code)){toQuiz("AI ასისტენტი ამ ხედში ჩართული არ არის. სამი მოკლე კითხვით შევარჩიოთ ჩოგანი.")}
-  else if(code==="rate_limited")bubble("ai err","ახლა ბევრი მოთხოვნაა. სცადე ცოტა ხანში.");
-  else if(code==="refused")bubble("ai err","ამაზე ვერ გიპასუხებ. მკითხე ჩოგნის შერჩევაზე.");
-  else if(code==="session_expired")bubble("ai err","სესია ამოიწურა. შედი ანგარიშზე თავიდან და სცადე.");
-  else bubble("ai err","კავშირი გაწყდა. სცადე ხელახლა გაგზავნა.");
+  else if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(code)){toQuiz(T("AI ასისტენტი ამ ხედში ჩართული არ არის. სამი მოკლე კითხვით შევარჩიოთ ჩოგანი.","The AI assistant isn't enabled in this view. Let's pick a racket with three short questions."))}
+  else if(code==="rate_limited")bubble("ai err",T("ახლა ბევრი მოთხოვნაა. სცადე ცოტა ხანში.","Lots of requests right now. Try again in a moment."));
+  else if(code==="refused")bubble("ai err",T("ამაზე ვერ გიპასუხებ. მკითხე ჩოგნის შერჩევაზე.","I can't answer that. Ask me about choosing a racket."));
+  else if(code==="session_expired")bubble("ai err",T("სესია ამოიწურა. შედი ანგარიშზე თავიდან და სცადე.","Your session expired. Sign in again and retry."));
+  else bubble("ai err",T("კავშირი გაწყდა. სცადე ხელახლა გაგზავნა.","Connection lost. Try sending again."));
  }finally{setBusy(false)}
 }
 
 /* fallback: three-question fitting */
 const Q=[
- {k:"level",q:"რა დონეზე თამაშობ?",o:[["1","ახლა ვიწყებ"],["2","ვთამაშობ რამდენიმე თვე–წელი"],["3","რეგულარულად, ტურნირებზეც"]]},
- {k:"style",q:"როგორ თამაშობ?",o:[["0","კონტროლი და სიზუსტე"],["1","ორივე ერთად"],["2","ძალა და სმეში"]]},
- {k:"budget",q:"რა ბიუჯეტზე ფიქრობ?",o:[["400","400 ₾-მდე"],["700","700 ₾-მდე"],["99999","მნიშვნელობა არ აქვს"]]},
+ {k:"level",q:["რა დონეზე თამაშობ?","What's your level?"],o:[["1","ახლა ვიწყებ","Just starting"],["2","ვთამაშობ რამდენიმე თვე–წელი","Playing for months to a year"],["3","რეგულარულად, ტურნირებზეც","Regularly, including tournaments"]]},
+ {k:"style",q:["როგორ თამაშობ?","How do you play?"],o:[["0","კონტროლი და სიზუსტე","Control and precision"],["1","ორივე ერთად","A bit of both"],["2","ძალა და სმეში","Power and smashes"]]},
+ {k:"budget",q:["რა ბიუჯეტზე ფიქრობ?","What's your budget?"],o:[["400","400 ₾-მდე","Up to 400 ₾"],["700","700 ₾-მდე","Up to 700 ₾"],["99999","მნიშვნელობა არ აქვს","Doesn't matter"]]},
 ];
 function toQuiz(note){
- mode="quiz";quiz.step=0;$("#botMode").textContent="Padelbade · სწრაფი შერჩევა";
- $("#botNote").textContent="აირჩიე პასუხი ღილაკებიდან.";
- bubble("ai",note||"გამარჯობა! სამი მოკლე კითხვით შევარჩევთ შენთვის შესაფერის ჩოგანს.");
+ mode="quiz";quiz.step=0;quizLabels();
+ bubble("ai",note||T("გამარჯობა! სამი მოკლე კითხვით შევარჩევთ შენთვის შესაფერის ჩოგანს.","Hi! Three short questions and we'll find the right racket for you."));
  askQuiz();
 }
-function askQuiz(){const s=Q[quiz.step];bubble("ai",s.q);setQuick(s.o.map(([v,l])=>[s.k+":"+v,l]))}
+function quizLabels(){$("#botMode").textContent=T("Padelbade · სწრაფი შერჩევა","Padelbade · Quick fit");$("#botNote").textContent=T("აირჩიე პასუხი ღილაკებიდან.","Pick an answer from the buttons.")}
+function askQuiz(){const s=Q[quiz.step];bubble("ai",T(...s.q));setQuick(s.o.map(([v,l,e])=>[s.k+":"+v,T(l,e)]))}
 function quizResult(){
  const SI={round:0,tear:1,hybrid:1.5,diamond:2};
  let rs=P.filter(p=>p.cat==="racket"&&p.stock>0&&p.price!=null);
  const inB=rs.filter(p=>p.price<=quiz.budget);
  const pool=inB.length?inB:[...rs].sort((a,b)=>a.price-b.price).slice(0,2);
  const top=pool.map(p=>({p,s:-Math.abs(p.level-quiz.level)*2-Math.abs(SI[p.shape]-quiz.style)})).sort((a,b)=>b.s-a.s||a.p.price-b.p.price).slice(0,2);
- const why=p=>`${SHAPE_NAME[p.shape]} ფორმა, ${p.balance.toLowerCase()} ბალანსი. ${p.desc}`;
- bubble("ai",(inB.length?"შენს პასუხებზე ყველაზე კარგად ესენი ერგება:":"ამ ბიუჯეტში ჩოგანი არ გვაქვს, ყველაზე ახლოს ესენია:")+top.map(t=>`\n${esc(why(t.p))}`+pickCard(t.p.id)).join(""));
- setQuick([["restart","თავიდან დაწყება"]]);
+ const why=p=>T(`${SHAPE_NAME[p.shape]} ფორმა, ${p.balance.toLowerCase()} ბალანსი. ${p.desc}`,`${SHAPE_NAME[p.shape]} shape, ${tx(p.balance).toLowerCase()} balance. ${L(p,"desc")}`);
+ bubble("ai",(inB.length?T("შენს პასუხებზე ყველაზე კარგად ესენი ერგება:","These fit your answers best:"):T("ამ ბიუჯეტში ჩოგანი არ გვაქვს, ყველაზე ახლოს ესენია:","We don't have a racket in that budget; these are the closest:"))+top.map(t=>`\n${esc(why(t.p))}`+pickCard(t.p.id)).join(""));
+ setQuick([["restart",T("თავიდან დაწყება","Start over")]]);
 }
 function onQuick(v,label){
  if(mode==="ai"){if(!busy)sendAI(label);return}
@@ -1067,10 +1114,28 @@ $("#botForm").addEventListener("submit",e=>{
  e.preventDefault();
  if(busy){ctl&&ctl.abort();return}
  const t=botIn.value.trim();if(!t)return;
- if(mode!=="ai"){bubble("me",esc(t));bubble("ai","ამ რეჟიმში აირჩიე პასუხი ღილაკებიდან.");botIn.value="";return}
+ if(mode!=="ai"){bubble("me",esc(t));bubble("ai",T("ამ რეჟიმში აირჩიე პასუხი ღილაკებიდან.","In this mode, pick an answer from the buttons."));botIn.value="";return}
  botIn.value="";sendAI(t);
 });
 fab.onclick=openBot;$("#botClose").onclick=closeBot;
 
+/* language switch: static text carries its English in data-en (innerHTML), data-en-ph (placeholder) and data-en-label (aria-label) */
+function applyLang(){
+ document.documentElement.lang=lang;
+ const sw=(sel,get,set,ka,en)=>document.querySelectorAll(sel).forEach(el=>{if(el.dataset[ka]==null)el.dataset[ka]=get(el);set(el,T(el.dataset[ka],el.dataset[en]))});
+ sw("[data-en]",el=>el.innerHTML,(el,v)=>el.innerHTML=v,"ka","en");
+ sw("[data-en-ph]",el=>el.placeholder,(el,v)=>el.placeholder=v,"kaPh","enPh");
+ sw("[data-en-label]",el=>el.getAttribute("aria-label"),(el,v)=>el.setAttribute("aria-label",v),"kaLabel","enLabel");
+ document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+}
+function setLang(l){
+ if(l===lang)return;
+ lang=l;try{localStorage.setItem("pb-lang",l)}catch(e){}
+ applyLang();renderGuide();renderAll();renderCart();syncPay();setBusy(busy);
+ if(mode==="quiz")quizLabels();
+ if(!$("#modal").hidden)openModal($("#mbox").dataset.id);
+}
+
+applyLang();renderGuide();syncPay();
 renderAll();renderCart();loadStock();
 </script>
