@@ -33,6 +33,7 @@
 }
 
 *{box-sizing:border-box}
+html{overflow-x:clip}
 body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 h1,h2,h3{font-family:var(--font-display);text-wrap:balance;margin:0;line-height:1.15}
@@ -45,6 +46,7 @@ button{cursor:pointer}
 /* header */
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
 .top .wrap{display:flex;align-items:center;gap:20px;height:64px}
+.top .wrap>*{flex-shrink:0}.top .brand{flex-shrink:1;min-width:0}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
 .brand img{height:34px;width:auto;filter:invert(1)}
 .brand b{font-family:"Montserrat",sans-serif;font-weight:800;font-size:17px;letter-spacing:-.01em}
@@ -58,7 +60,7 @@ button{cursor:pointer}
 .langsw button{border:0;background:none;color:var(--muted);font-family:"Montserrat","Noto Sans Georgian",sans-serif;font-weight:700;font-size:12px;padding:5px 8px;border-radius:6px;line-height:1}
 .langsw button[aria-pressed="true"]{background:var(--lime);color:var(--lime-ink)}
 .menu-btn{display:none;border:1px solid var(--line);background:var(--surface);color:var(--fg);width:40px;height:40px;border-radius:8px;place-items:center;padding:0;flex:none}
-@media (max-width:760px){
+@media (max-width:880px){
 .top .wrap{gap:10px;height:58px}
 .menu-btn{display:grid;order:3}
 .langsw{margin-left:auto;order:1}
@@ -68,7 +70,7 @@ button{cursor:pointer}
 .nav a{padding:13px 2px;font-size:16px;border-bottom:1px solid var(--line)}
 .nav a:last-child{border-bottom:0}
 }
-@media (max-width:420px){.brand img{height:28px}.brand b{font-size:15px}.brand span{font-size:10px;padding:2px 5px}.cart-btn{padding:8px 11px}.cart-btn .lbl{display:none}.top .wrap{gap:8px}
+@media (max-width:560px){.brand img{height:28px}.brand b{font-size:15px}.brand span{font-size:10px;padding:2px 5px}.cart-btn{padding:8px 11px}.cart-btn .lbl{display:none}.top .wrap{gap:8px}
 /* phones: the switch shows only the language you can switch to */
 .langsw{padding:0;border:0;background:none}.langsw button[aria-pressed="true"]{display:none}.langsw button{height:40px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}}
 @media (max-width:380px){.brand span{display:none}}
