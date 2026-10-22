@@ -401,6 +401,7 @@ button.slide{border:0;background:none;padding:0;cursor:pointer;display:block;col
 .fab .ic{width:30px;height:30px}
 }
 @media (max-width:760px){input,select,textarea{font-size:16px}}
+[aria-invalid="true"]{border-color:var(--sale)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--sale) 22%,transparent)!important}
 </style>
 
 <header class="top">
@@ -975,11 +976,16 @@ document.querySelectorAll('input[name="pay"]').forEach(r=>r.addEventListener("ch
 document.addEventListener("click",e=>{const b=e.target.closest(".cpy");if(!b)return;const v=b.dataset.copy;const done=()=>{b.classList.add("ok");b.querySelector("span").textContent=T("კოპირდა","Copied");setTimeout(()=>{b.classList.remove("ok");b.querySelector("span").textContent=T("კოპირება","Copy")},1600)};
  const fb=()=>{const c=b.parentElement.querySelector("code");const r=document.createRange();r.selectNodeContents(c);const s=getSelection();s.removeAllRanges();s.addRange(r);toast(T("მონიშნულია, დააკოპირე Ctrl+C / ⌘C","Selected, copy with Ctrl+C / ⌘C"))};
  try{navigator.clipboard.writeText(v).then(done,fb)}catch(err){fb()}});
+/* Georgian mobile: 5XXXXXXXX, optionally prefixed with +995 / 00995 / 995 */
+const validPhone=v=>{v=v.trim();if(!/^\+?[\d\s()\-]+$/.test(v))return false;const d=v.replace(/\D/g,"").replace(/^(00)?995/,"");return /^5\d{8}$/.test(d)};
+$("#cphone").addEventListener("input",e=>e.target.removeAttribute("aria-invalid"));
 $("#checkout").addEventListener("submit",async e=>{
  e.preventDefault();
  const msg=$("#formMsg"),bank=payMode()==="bank";
  if(!count()){msg.innerHTML=`<p class="note">${T("კალათა ცარიელია. ჯერ დაამატე პროდუქტი.","Your cart is empty. Add a product first.")}</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});return}
- if(!$("#cname").value.trim()||$("#cphone").value.replace(/\D/g,"").length<9){msg.innerHTML=`<p class="note" style="color:var(--sale)">${T("შეიყვანე სახელი და ტელეფონის ნომერი (მინიმუმ 9 ციფრი).","Enter your name and phone number (at least 9 digits).")}</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});return}
+ if(!$("#cname").value.trim()){msg.innerHTML=`<p class="note" style="color:var(--sale)">${T("შეიყვანე სახელი.","Enter your name.")}</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});$("#cname").focus();return}
+ if(!validPhone($("#cphone").value)){const ph=$("#cphone");ph.setAttribute("aria-invalid","true");msg.innerHTML=`<p class="note" style="color:var(--sale)">${T("შეიყვანე სწორი ნომერი","Enter a valid phone number")} <small>(${T("მაგ.","e.g.")} 5XX XX XX XX)</small></p>`;toast(T("შეიყვანე სწორი ნომერი","Enter a valid phone number"));msg.scrollIntoView({behavior:"smooth",block:"center"});ph.focus();return}
+ $("#cphone").removeAttribute("aria-invalid");
  if(bank&&$("#caddr").value.trim().length<5){msg.innerHTML=`<p class="note">${T("მიუთითე მიწოდების მისამართი.","Enter a delivery address.")}</p>`;msg.scrollIntoView({behavior:"smooth",block:"center"});return}
  let no="PB-"+String(Date.now()).slice(-5);const tot=$("#tot").textContent;
  if(DB){
